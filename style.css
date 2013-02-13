@@ -1,0 +1,17 @@
+/*
+Theme Name: Pingeroo
+Theme URI: http://svn.kingkool68.com/projects/rh-starter-theme/
+Author: Russell Heimlich
+Author URI: http://www.russellheimlich.com/blog/
+Description: Ping multiple social networks from your own WordPress server. 
+Version: 0.1
+*/
+
+html {
+background-color:#ddd;
+}
+body {
+background-color:#fff;
+margin:1% auto;
+width:960px;
+}
