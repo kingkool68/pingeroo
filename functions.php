@@ -41,3 +41,6 @@ function register_pingeroo_styles() {
 	wp_register_style( 'pingeroo', get_template_directory_uri() . '/style.css', array(), NULL, 'all' );
 }
 add_action( 'init', 'register_pingeroo_styles' );
+
+include( 'functions-pingeroo.php' );
+//include( 'functions-settings.php' );
