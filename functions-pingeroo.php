@@ -20,6 +20,8 @@ function pingeroo_options_page() {
 
 	switch ( $current_tab ):
       case 'general' :
+	  	settings_fields('pingeroo_options');
+		do_settings_sections('pingeroo');
 	  break;
 	  
 	  case 'facebook' :
@@ -64,3 +66,19 @@ function pingeroo_get_admin_tab_name( $current_tab ) {
 	$tabs = pingeroo_get_admin_tabs();
 	return $tabs[$current_tab];
 }
+
+wp_register_script( 'pingeroo', get_template_directory_uri() . '/js/pingeroo.js', array('jquery'), '', true );
+
+add_action('wp_ajax_pingeroo', 'pingeroo_ajax_callback');
+
+function pingeroo_ajax_callback() {
+	var_dump($_POST['services']);
+	die();
+}
+
+function pingeroo_ajaxurl() {
+?>
+	<script> var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';</script>
+<?php
+}
+add_action('wp_head','pingeroo_ajaxurl');

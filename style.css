@@ -8,10 +8,17 @@ Version: 0.1
 */
 
 html {
-background-color:#ddd;
+background-color:#fff;
+font-family:Arial, Helvetica, sans-serif;
 }
 body {
-background-color:#fff;
 margin:1% auto;
 width:960px;
+}
+label {
+display:block;
+cursor:pointer;
+}
+input.submit {
+display:block;
 }

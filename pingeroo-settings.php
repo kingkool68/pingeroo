@@ -13,6 +13,7 @@ add_action('after_setup_theme','pingeroo_options_init', 9 );
 
 function pingeroo_register_settings() {
 	register_setting( 'pingeroo_options', 'pingeroo_options' );
+	
 	add_settings_section('pingeroo_general_header', 'Header Options', 'pingeroo_general_header_section_text', 'pingeroo');
 	add_settings_field('pingeroo_setting_header_nav_menu_position', 'Header Nav Menu Position', 'pingeroo_setting_header_nav_menu_position', 'pingeroo', 'pingeroo_general_header');
 
@@ -20,7 +21,7 @@ function pingeroo_register_settings() {
 add_action('admin_init', 'pingeroo_register_settings');
 
 function pingeroo_general_header_section_text() {
-	echo 'Header TEXT';
+	//echo 'Header TEXT';
 }
 
 function pingeroo_setting_header_nav_menu_position() {
