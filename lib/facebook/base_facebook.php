@@ -944,6 +944,10 @@ abstract class BaseFacebook
     }
 
     curl_setopt_array($ch, $opts);
+	
+	var_dump($url);
+	var_dump( $params );
+	
     $result = curl_exec($ch);
 
     if (curl_errno($ch) == 60) { // CURLE_SSL_CACERT
