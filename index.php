@@ -10,15 +10,15 @@ get_header(); ?>
 			<textarea id="message" name="message"></textarea>
 		</fieldset>
 		
-		<fieldset>
+		<fieldset id="services">
 			<legend>Pingeroo to</legend>
 			<select>
 				<option>Select a group</option>
 				<option>Default</option>
 				<option>Custom</option>	
 			</select>
-			<label><input type="checkbox" name="services[twitter]"> Twitter</label>
-			<label><input type="checkbox" name="services[facebook]"> Facebook</label>
+			<label><input type="checkbox" name="services[twitter]" value="twitter"> Twitter</label>
+			<label><input type="checkbox" name="services[facebook]" value="facebook"> Facebook</label>
 		</fieldset>
 		
 		<fieldset>
