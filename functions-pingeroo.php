@@ -56,10 +56,8 @@ function pingeroo_option_tabs( $current_tab = 'general' ) {
 function pingeroo_get_admin_tabs() {
 	$tabs = array(  
 		'general' => 'General',
-		'facebook' => 'Facebook',
-		'twitter' => 'Twitter'
 	);
-	return $tabs;
+	return apply_filters( 'pingeroo_admin_tabs', $tabs );
 }
 
 function pingeroo_get_admin_tab_name( $current_tab ) {
@@ -72,7 +70,7 @@ wp_register_script( 'pingeroo', get_template_directory_uri() . '/js/pingeroo.js'
 add_action('wp_ajax_pingeroo', 'pingeroo_ajax_callback');
 
 function pingeroo_ajax_callback() {
-	var_dump($_POST['services']);
+	var_dump( $_POST['data'] );
 	die();
 }
 
@@ -82,3 +80,14 @@ function pingeroo_ajaxurl() {
 <?php
 }
 add_action('wp_head','pingeroo_ajaxurl');
+
+function register_pingeroo_service( $args ) {
+	
+	//add_filter( 'pingeroo_admin_tabs',  );
+}
+
+function pingeroo_init() {
+	do_action('pingeroo_init');
+	
+}
+add_action( 'init', 'pingeroo_init', 999 );
