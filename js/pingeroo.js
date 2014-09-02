@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
 	var $message = $('#message');
 	$message.on('keyup', function() {
 		var t = $(this);
-		$('#character-count').html(t.val().length);
+		$('#character-count').html( $.trim(this.value).length );
 	});
 	
 	$('form').on('submit', function(e) {
