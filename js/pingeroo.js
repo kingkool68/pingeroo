@@ -28,7 +28,10 @@ jQuery(document).ready(function($) {
 		}
 		
 		if( val == 'none' ) {
-			$('#the-services input[type="checkbox"]').prop('checked', false);
+			$('#the-services input[type="checkbox"]').prop({
+				'checked': false,
+				'indeterminate': false	
+			});
 			$(':selected', $this).prop('value', 'all').text('All');
 			resetTheServicesSelect()
 		}
