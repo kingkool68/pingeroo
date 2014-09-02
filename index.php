@@ -1,32 +1,35 @@
 <?php
 wp_enqueue_style('pingeroo');
 wp_enqueue_script('pingeroo');
-get_header(); ?>
+get_header();
+?>
+
 <div id="content" role="main">
 	<p id="character-count"></p>
-	<form>
-		<fieldset>
+	<form method="post">
+		<fieldset id="the-message" class="effect4">
 			<label for="message">Message</label>
 			<textarea id="message" name="message"></textarea>
 		</fieldset>
 		
-		<fieldset id="services">
+		<fieldset id="the-services">
 			<legend>Pingeroo to</legend>
 			<select>
-				<option>Select a group</option>
-				<option>Default</option>
-				<option>Custom</option>	
+				<option value="-1">Select a group</option>
+				<option value="all">All</option>
+				<option value="+1">+ Create a new group</option>	
 			</select>
-			<label><input type="checkbox" name="services[twitter]" value="twitter"> Twitter</label>
-			<label><input type="checkbox" name="services[facebook]" value="facebook"> Facebook</label>
+			
+			<?php list_pingeroo_services(); ?>
 		</fieldset>
 		
-		<fieldset>
+		<fieldset id="the-time">
 			<legend>When?</legend>
 			<input type="date">
 			<input type="time">
 		</fieldset>
 		
+		<input type="hidden" name="pingeroo-nonce" value="<?php echo wp_create_nonce( 'pingeroo-update' );?>">
 		<input type="submit" class="submit" value="Post it!">
 	</form>
 </div>
