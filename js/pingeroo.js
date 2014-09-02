@@ -45,11 +45,33 @@ jQuery(document).ready(function($) {
 		if( $parent.is('li') ) {
 			var totalCheckBoxes = $parent.find('input[name="pingeroo-services[]"]');
 			var checkedCheckBoxes = $parent.find('input[name="pingeroo-services[]"]:checked');
+			
+			var makeParentIndeterminate = true;
+			if( !checkedCheckBoxes.length ) {
+				makeParentIndeterminate = false;	
+			}
+			
 			var makeParentChecked = false;
 			if( checkedCheckBoxes.length == totalCheckBoxes.length ) {
 				makeParentChecked = true;
+				makeParentIndeterminate = false;
 			}
-			$parent.find('.has-children').prop('checked', makeParentChecked);
+			
+			$parent.find('.has-children').prop({
+				'indeterminate': makeParentIndeterminate,
+				'checked' : makeParentChecked
+			});
+		}
+		
+		if( $this.hasClass('has-children') ) {
+			var toCheck = false;
+			if( $this.is(':checked') ) {
+				var toCheck = true;
+			}
+			
+			$this.parent().siblings('ul').find('input[name="pingeroo-services[]"]').each(function(index, element) {
+				this.checked = toCheck;
+			});
 		}
 	});
 	
