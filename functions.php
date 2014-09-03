@@ -43,4 +43,13 @@ function register_pingeroo_styles() {
 }
 add_action( 'init', 'register_pingeroo_styles' );
 
+function pingeroo_ajaxurl() {
+?>
+<script>
+	var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+</script>
+<?php
+}
+add_action('wp_head','pingeroo_ajaxurl');
+
 include( 'functions-pingeroo.php' );

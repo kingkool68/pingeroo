@@ -24,7 +24,8 @@ jQuery(document).ready(function($) {
 		if( val == 'all' ) {
 			$('#the-services input[type="checkbox"]').prop('checked', true);
 			$(':selected', $this).prop('value', 'none').text('None');
-			resetTheServicesSelect()
+			resetTheServicesSelect();
+			return;
 		}
 		
 		if( val == 'none' ) {
@@ -33,11 +34,25 @@ jQuery(document).ready(function($) {
 				'indeterminate': false	
 			});
 			$(':selected', $this).prop('value', 'all').text('All');
-			resetTheServicesSelect()
+			resetTheServicesSelect();
+			return;
 		}
 		
 		if( val == '+1' ) {
 			createNewPingerooGroup();
+			return;
+		}
+		
+		$services = $('#the-services');
+		$('input[type="checkbox"]', $services).prop({
+			'checked': false,
+			'indeterminate': false	
+		});
+		
+		var ids = val.split(',');
+		for( i=0; i<ids.length; i++ ) {
+			var id = ids[i];
+			$('input[value="' + id + '"]', $services).prop('checked', true).change();
 		}
 	});
 	
@@ -92,6 +107,30 @@ jQuery(document).ready(function($) {
 			values.push(this.value);
 		});
 		var groupName = prompt('What do you want to name your new group?');
+		
+		var data = {
+			'action': 'add_pingeroo_group',
+			'name': groupName,
+			'values': values.join(','),
+			'nonce': $('#pingeroo-create-group-nonce').val()
+		};
+
+		$.ajax({
+			type: "POST",
+			url: ajaxurl,
+			data: data
+		}).success( function( resp ) {
+			var data = resp.data;
+			var $options = $('option', $services);
+			
+			$options.slice( 0, $options.length - 2 ).remove();
+			$(data.html).prependTo( $services.find('select') );
+			
+			$('select .' + data.name, $services).prop('selected', true);
+			
+		}).fail( function( response ) {
+			alert('Error: ' + response.responseText );
+		});
 		
 		//Select the default option
 		resetTheServicesSelect()

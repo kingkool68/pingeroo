@@ -15,12 +15,14 @@ get_header();
 		<fieldset id="the-services">
 			<legend>Pingeroo to</legend>
 			<select>
-				<option value="-1">Select a group</option>
+				<?php echo get_pingeroo_group_options(); ?>
 				<option value="all">All</option>
 				<option value="+1">+ Create a new group</option>	
 			</select>
 			
 			<?php list_pingeroo_services(); ?>
+			
+			<?php wp_nonce_field( 'pingeroo-create-group', 'pingeroo-create-group-nonce' ); ?>
 		</fieldset>
 		
 		<fieldset id="the-time">

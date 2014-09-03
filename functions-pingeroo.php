@@ -73,3 +73,42 @@ function list_pingeroo_services() {
 	
 	echo $output;
 }
+
+function get_pingeroo_groups() {
+	return get_option( 'pingeroo-groups', array() );
+}
+
+function get_pingeroo_group_options() {
+	$groups = get_pingeroo_groups();
+	$output = array('<option value="-1">Select a group</option>');
+	foreach( $groups as $name => $val ) {
+		$output[] = '<option value="' . esc_attr($val) . '" class="' . sanitize_title( $name ) . '">' . $name . '</option>';
+	}
+	
+	return implode("\n", $output );
+}
+
+function add_pingeroo_group() {
+	if( !isset( $_REQUEST['nonce'] ) || !wp_verify_nonce( $_REQUEST['nonce'], 'pingeroo-create-group' ) ) {
+		header("HTTP/1.1 404 Not Found");
+		echo 'Bad Nonce!';
+		die();
+	}
+	$groups = get_pingeroo_groups();
+	
+	$name = stripslashes( sanitize_text_field($_REQUEST['name']) );
+	$values = preg_replace('/[^0-9,]/i', '', $_REQUEST['values']);
+	
+	$groups[ $name ] = $values;
+	update_option( 'pingeroo-groups', $groups );
+	
+	$data = (object) array(
+		'html' => get_pingeroo_group_options(),
+		'name' => sanitize_title($name)
+	);
+	wp_send_json_success( $data );
+	
+	die();
+}
+add_action( 'wp_ajax_add_pingeroo_group', 'add_pingeroo_group' );
+add_action( 'wp_ajax_nopriv_add_pingeroo_group', 'add_pingeroo_group' );
