@@ -1,4 +1,14 @@
 <?php
+
+/* TO DO:
+	
+	Make an admin page to manage groups: reorder, delete, set default group.
+	Submit the data and then post to each network.
+		- https://developer.linkedin.com/documents/share-api
+		- https://api.twitter.com/1.1/statuses/update.json
+		- https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed 
+*/
+
 function get_pingeroo_services() {
 	//Initialize instance of Keyring
 	$kr = Keyring::init();
