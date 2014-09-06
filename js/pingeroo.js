@@ -6,11 +6,11 @@ jQuery(document).ready(function($) {
 	});
 	
 	$('form').on('submit', function(e) {
-		e.preventDefault();
 		
 		var theMessage = $.trim( $message.val() );
 		if( !theMessage ) {
-			return;
+			e.preventDefault();
+			return
 		}
 	});
 	

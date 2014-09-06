@@ -5,9 +5,18 @@ get_header();
 ?>
 
 <div id="content" role="main">
+<?php
+$str = "Time for bed... --'naw mean?";//Twitter turned ' into \' weird.
+
+echo '<pre>';
+echo $str . "\n";
+echo wptexturize( $str ) . "\n";
+echo html_entity_decode( wptexturize( $str ) ). "\n";
+echo '</pre>';
+?>
 	<p id="character-count"></p>
-	<form method="post">
-		<fieldset id="the-message" class="effect4">
+	<form method="post" action="<?php echo get_site_url(); ?>">
+		<fieldset id="the-message">
 			<label for="message">Message</label>
 			<textarea id="message" name="message"></textarea>
 		</fieldset>
@@ -31,7 +40,7 @@ get_header();
 			<input type="time">
 		</fieldset>
 		
-		<input type="hidden" name="pingeroo-nonce" value="<?php echo wp_create_nonce( 'pingeroo-update' );?>">
+		<input type="hidden" name="pingeroo-nonce" value="<?php echo wp_create_nonce( 'do-pingeroo' );?>">
 		<input type="submit" class="submit" value="Post it!">
 	</form>
 </div>
