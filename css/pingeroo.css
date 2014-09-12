@@ -1,0 +1,59 @@
+html {
+background-color:#fafafa;
+font-family:'Open sans', Arial, Helvetica, sans-serif;
+font-weight:300;
+}
+body {
+margin:1% auto;
+width:960px;
+}
+fieldset {
+background-color:#fff;
+border-color:#f1f1f1;
+border-radius:5px;
+padding:0.5em 1.2em;
+margin:1em 0.5em;
+}
+legend {
+font-size:1.8em;
+}
+
+.hidden {
+text-indent: 100%;
+white-space: nowrap;
+overflow: hidden;
+}
+
+#the-message label {
+font-size:1.5em;
+}
+#the-message textarea {
+height:55px;
+width:100%;
+font-size:2em;
+}
+#the-services {
+float:left;
+width:20%;
+}
+#the-services ul {
+padding-left:0.3em;
+}
+#the-services ul ul {
+padding-left:1em;
+}
+#the-services li {
+list-style:none;
+}
+#the-time {
+float:left;
+width:10%;
+}
+label {
+display:block;
+cursor:pointer;
+}
+input.submit {
+float:right;
+font-size:4em;
+}
