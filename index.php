@@ -8,8 +8,7 @@ get_header();
 	<form method="post" action="<?php echo get_site_url(); ?>">
 		<fieldset id="the-message">
 			<label for="message" class="hidden">Message</label>
-			<textarea id="message" name="message"></textarea>
-			<p id="character-count"></p>
+			<textarea id="message" name="message" rows="1"></textarea>
 		</fieldset>
 		
 		<fieldset id="the-services">
@@ -30,12 +29,22 @@ get_header();
 			<input type="date">
 			<input type="time">
 		</fieldset>
+
+		<div class="controls">
+			<input type="submit" class="submit" value="Post it!">
+			<p id="character-count">0</p>
+		</div>
 		
 		<input type="hidden" name="pingeroo-nonce" value="<?php echo wp_create_nonce( 'do-pingeroo' );?>">
-		<ul>
-			<li></li>
-		</ul>
-		<input type="submit" class="submit" value="Post it!">
 	</form>
+	
+	<section id="recent" style="display:none;">
+		<h2>Recent Pingeroos</h2>
+		<ul>
+			<li><a href="#">Recent Pingeroo update for all to see.</a></li>
+			<li><a href="#">Recent Pingeroo update for all to see.</a></li>
+			<li><a href="#">Recent Pingeroo update for all to see.</a></li>
+		</ul>
+	</section>
 </div>
 <?php get_footer(); ?>

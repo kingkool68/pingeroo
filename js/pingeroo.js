@@ -1,8 +1,9 @@
 jQuery(document).ready(function($) {
 	var $message = $('#message');
 	$message.on('keyup', function() {
-		var t = $(this);
-		$('#character-count').html( $.trim(this.value).length );
+		$('#character-count').html( this.value.length );
+		this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
 	});
 	
 	$('form').on('submit', function(e) {

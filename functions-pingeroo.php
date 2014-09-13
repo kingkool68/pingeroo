@@ -55,14 +55,14 @@ function list_pingeroo_services() {
 		
 		$output .= '<li class="' . sanitize_title($service_name) . '">';
 		if( $nested ) {
-			$output .= '<label><input type="checkbox" class="has-children"> ' . ucfirst($service_name) . '</label><ul>';
+			$output .= '<label class="group"><input type="checkbox" class="has-children"> ' . ucfirst($service_name) . '</label><ul>';
 		}
 		foreach( $group as $service ) {
 			if( $nested ) {
 				$output .= '<li>';
 			}
 			
-			$output .= '<label><input type="checkbox" name="pingeroo-services[]" value="' . $service->unique_id . '"> ' . $service->display_name . '</label>';
+			$output .= '<label><input type="checkbox" name="pingeroo-services[]" value="' . $service->unique_id . '"> <i class="icon-' .  sanitize_title($service_name) . '"></i> ' . $service->display_name . '<span class="hidden"> (' . $service_name . ')</span></label>';
 			
 			if( $nested ) {
 				$output .= '</li>';

@@ -1,5 +1,6 @@
 html {
-background-color:#fafafa;
+background-color:#EEF1F6;
+background-repeat:no-repeat;
 font-family:'Open sans', Arial, Helvetica, sans-serif;
 font-weight:300;
 }
@@ -7,44 +8,81 @@ body {
 margin:1% auto;
 width:960px;
 }
-fieldset {
+form {
+overflow:auto;
+height:100%;
 background-color:#fff;
 border-color:#f1f1f1;
 border-radius:5px;
 padding:0.5em 1.2em;
+}
+fieldset {
 margin:1em 0.5em;
 }
 legend {
 font-size:1.8em;
 }
+h1 {
+font-size:4.5em;
+font-weight:600;
+margin-bottom:1em;
+}
+h1 a {
+text-decoration:none;
+}
 
 .hidden {
-text-indent: 100%;
-white-space: nowrap;
+border: 0;
+clip: rect(0 0 0 0);
+height: 1px;
+margin: -1px;
 overflow: hidden;
+padding: 0;
+position: absolute;
+width: 1px;
 }
 
 #the-message label {
 font-size:1.5em;
 }
 #the-message textarea {
-height:55px;
 width:100%;
 font-size:2em;
+padding:0.35em;
+overflow:hidden;
 }
 #the-services {
 float:left;
-width:20%;
+width:25%;
+}
+#the-services select {
+margin:0.5em 0 0.8em;
+}
+#the-services input {
+position:relative;
+top:-0.2em;
 }
 #the-services ul {
 padding-left:0.3em;
 }
 #the-services ul ul {
+padding-top:0.25em;
 padding-left:1em;
 }
 #the-services li {
-list-style:none;
+list-style: none;
+font-size: 1.6em;
+line-height: 1.333;
+padding-bottom: 0.45em;
 }
+#the-services li li {
+font-size:1em;
+}
+#the-services i {
+font-size:85%;
+}
+
+
 #the-time {
 float:left;
 width:10%;
@@ -52,6 +90,12 @@ width:10%;
 label {
 display:block;
 cursor:pointer;
+}
+#character-count {
+float: right;
+margin-right: 0.8em;
+font-size: 2.2em;
+padding-top: 0.8em;
 }
 input.submit {
 float:right;
