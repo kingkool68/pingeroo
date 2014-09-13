@@ -413,3 +413,19 @@ content: "\e608";
 .icon-linkedin:before {
 content: "\e609";
 }
+
+label:hover .icon-twitter,
+.icon-twitter:hover,
+.icon-twitter:focus {
+color:#00ACED;
+}
+label:hover .icon-facebook,
+.icon-facebook:hover,
+.icon-facebook:focus {
+color:#3B5998;
+}
+label:hover .icon-linkedin,
+.icon-linkedin:hover,
+.icon-linkedin:focus {
+color:#0976b4;
+}

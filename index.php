@@ -12,7 +12,7 @@ get_header();
 		</fieldset>
 		
 		<fieldset id="the-services">
-			<legend>Pingeroo to</legend>
+			<legend><i class="icon-flow-cascade"></i> Pingeroo to</legend>
 			<select>
 				<?php echo get_pingeroo_group_options(); ?>
 				<option value="all">All</option>
@@ -25,7 +25,7 @@ get_header();
 		</fieldset>
 		
 		<fieldset id="the-time">
-			<legend><i class="dashicons dashicons-clock"></i>When?</legend>
+			<legend><i class="icon-clock"></i> When?</legend>
 			<input type="date">
 			<input type="time">
 		</fieldset>
