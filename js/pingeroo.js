@@ -1,4 +1,9 @@
 jQuery(document).ready(function($) {
+	
+	/**
+	* The Message
+	*
+	**/
 	var $message = $('#message');
 	$('<textarea id="message-clone" rows="1" />').insertAfter('#message');
 	$message.on('keyup', function() {
@@ -21,7 +26,13 @@ jQuery(document).ready(function($) {
 			return
 		}
 	});
-	
+
+
+
+	/**
+	* The Services
+	*
+	**/
 	$('#the-services select').on('change', function(e) {
 		$this = $(this);
 		var val = $this.val();
@@ -147,4 +158,25 @@ jQuery(document).ready(function($) {
 	function resetTheServicesSelect() {
 		$( '#the-services option[value="-1"]' ).prop('selected', true);
 	}
+	
+	
+	/**
+	* When to post?
+	*
+	**/
+	Date.prototype.getFormattedTime = function () {
+		//var hours = this.getHours() == 0 ? "12" : this.getHours() > 12 ? this.getHours() - 12 : this.getHours();
+		var hours = this.getHours();
+		if( hours < 10 ) {
+		hours = '0' + hours;
+		}
+		var minutes = (this.getMinutes() < 10 ? "0" : "") + this.getMinutes();
+		var ampm = this.getHours() < 12 ? "AM" : "PM";
+		var formattedTime = hours + ":" + minutes /*+ " " + ampm;*/
+		return formattedTime;
+	}
+	
+	var now = new Date();
+	console.log( now.getFormattedTime() );
+	$('#time').val( now.getFormattedTime() );
 });
