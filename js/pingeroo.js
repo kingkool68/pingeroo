@@ -1,10 +1,17 @@
 jQuery(document).ready(function($) {
 	var $message = $('#message');
+	$('<textarea id="message-clone" rows="1" />').insertAfter('#message');
 	$message.on('keyup', function() {
 		$('#character-count').html( this.value.length );
+		var clonedMessage = document.getElementById('message-clone')
+		clonedMessage.value = this.value;
+		this.style.height = clonedMessage.scrollHeight + 'px';
+		/*
 		this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
-	});
+		*/
+		
+	}).focus();
 	
 	$('form').on('submit', function(e) {
 		

@@ -6,7 +6,7 @@ font-weight:300;
 }
 body {
 margin:1% auto;
-width:960px;
+max-width:96em;
 }
 form {
 overflow:auto;
@@ -42,6 +42,9 @@ position: absolute;
 width: 1px;
 }
 
+#the-message {
+position:relative;
+}
 #the-message label {
 font-size:1.5em;
 }
@@ -51,6 +54,18 @@ font-size:2em;
 padding:0.35em;
 overflow:hidden;
 }
+#message {
+transition:height 0.7s;
+}
+#the-message textarea#message-clone {
+visibility:hidden;
+position:absolute;
+top:0;
+left:0;
+z-index:-1;
+}
+
+
 #the-services {
 float:left;
 width:25%;
@@ -61,6 +76,14 @@ margin:0.5em 0 0.8em;
 #the-services input {
 position:relative;
 top:-0.2em;
+}
+#the-services label {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
 }
 #the-services .group {
 font-size:85%;
