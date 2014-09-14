@@ -3,7 +3,7 @@ wp_enqueue_style('pingeroo');
 wp_enqueue_style('kit-kat-clock');
 
 wp_enqueue_script('pingeroo');
-wp_enqueue_script('kit-kat-clock');
+//wp_enqueue_script('kit-kat-clock');
 get_header();
 ?>
 
@@ -29,8 +29,8 @@ get_header();
 		
 		<fieldset id="the-time">
 			<legend><i class="icon-clock"></i> When?</legend>
-			<input type="date">
-			<input type="time">
+			<input type="date" id="date" name="date">
+			<input type="time" id="time" name="time">
 		</fieldset>
 
 		<div class="controls">
