@@ -40,9 +40,11 @@ function category_id_class($classes) {
 function register_pingeroo_styles() {
 	wp_register_style( 'reset', get_template_directory_uri() . '/css/reset.css', array(), NULL, 'all' );
 	wp_register_style( 'pingeroo', get_template_directory_uri() . '/css/pingeroo.css', array('reset'), NULL, 'all' );
+	wp_register_style( 'kit-kat-clock', get_template_directory_uri() . '/css/kit-kat-clock.css', array('reset'), NULL, 'all' );
 	
 	
 	wp_register_script( 'pingeroo', get_template_directory_uri() . '/js/pingeroo.js', array('jquery'), NULL, true );
+	wp_register_script( 'kit-kat-clock', get_template_directory_uri() . '/js/kit-kat-clock.js', array('jquery'), NULL, true );
 }
 add_action( 'init', 'register_pingeroo_styles' );
 

@@ -1,6 +1,9 @@
 <?php
 wp_enqueue_style('pingeroo');
+wp_enqueue_style('kit-kat-clock');
+
 wp_enqueue_script('pingeroo');
+wp_enqueue_script('kit-kat-clock');
 get_header();
 ?>
 
