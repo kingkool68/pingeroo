@@ -24,4 +24,8 @@
 <body <?php body_class(); ?>>
 <div id="header">
 	<h1><a href="<?php echo home_url(); ?>/"><?php bloginfo('name'); ?></a></h1>
+	<div class="controls">
+		<p id="character-count">0</p>
+		<input type="submit" class="submit" value="Post it!">
+	</div>
 </div>
