@@ -158,7 +158,7 @@ function do_pingeroo() {
 	//wp_redirect( add_query_arg( array('pingeroo' => 'success'), get_site_url() ) );
 	die();
 }
-add_action( 'init', 'do_pingeroo' );
+//add_action( 'init', 'do_pingeroo' );
 
 function pingeroo_post_to_twitter($message, $service) {
 	
