@@ -9,13 +9,9 @@ get_header();
 
 <div id="content" role="main">
 	<form method="post" action="<?php echo get_site_url(); ?>">
-		<fieldset id="the-message">
-			<label for="message" class="hidden">Message</label>
-			<textarea id="message" name="message" rows="1"></textarea>
-		</fieldset>
 		
 		<fieldset id="the-services">
-			<legend><i class="icon-flow-cascade"></i> Pingeroo to</legend>
+			<legend><i class="icon-flow-tree"></i> Pingeroo to</legend>
 			<select>
 				<?php echo get_pingeroo_group_options(); ?>
 				<option value="all">All</option>
@@ -27,15 +23,37 @@ get_header();
 			<?php wp_nonce_field( 'pingeroo-create-group', 'pingeroo-create-group-nonce' ); ?>
 		</fieldset>
 		
-		<fieldset id="the-time">
-			<legend><i class="icon-clock"></i> When?</legend>
-			<input type="date" id="date" name="date">
-			<input type="time" id="time" name="time">
-		</fieldset>
-
-		<div class="controls">
-			<input type="submit" class="submit" value="Post it!">
-			<p id="character-count">0</p>
+		<div class="main">
+			<fieldset id="the-message">
+				<label for="message" class="hidden">Message</label>
+				<textarea id="message" name="message" rows="1"></textarea>
+			</fieldset>
+			
+			<p class="buttons">
+				<button title="Media" class="media" id="media-upload"><i class="icon-pictures"></i></button>
+				<button title="Schedule" class="schedule"><i class="icon-clock"></i></button>
+				<button title="Geotag" class="geotag"><i class="icon-location"></i></button>
+			</p>
+			
+			<div class="added-media"></div>
+			
+			<div class="options">
+				<fieldset id="the-time" class="hide">
+					<legend><i class="icon-clock"></i> Schedule</legend>
+					<input type="date" id="date" name="date">
+					<input type="time" id="time" name="time">
+				</fieldset>
+				
+				<fieldset id="the-location" class="hide">
+					<legend><i class="icon-location"></i> Location</legend>
+					
+					<div id="map"></div>
+					
+					<input type="hidden" name="lat" id="lat" value="">
+					<input type="hidden" name="long" id="long" value="">
+				</fieldset>
+			</div>
+			
 		</div>
 		
 		<input type="hidden" name="pingeroo-nonce" value="<?php echo wp_create_nonce( 'do-pingeroo' );?>">

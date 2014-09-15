@@ -1,4 +1,9 @@
 jQuery(document).ready(function($) {
+	/**
+	* General
+	*
+	**/
+	
 	
 	/**
 	* The Message
@@ -13,7 +18,7 @@ jQuery(document).ready(function($) {
 		this.style.height = clonedMessage.scrollHeight + 'px';
 		/*
 		this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
+		this.style.height = this.scrollHeight + 'px';
 		*/
 		
 	}).focus();
@@ -161,7 +166,7 @@ jQuery(document).ready(function($) {
 	
 	
 	/**
-	* When to post?
+	* Schedule
 	*
 	**/
 	Date.prototype.getFormattedTime = function () {
@@ -177,6 +182,135 @@ jQuery(document).ready(function($) {
 	}
 	
 	var now = new Date();
-	console.log( now.getFormattedTime() );
+	//console.log( now.getFormattedTime() );
 	$('#time').val( now.getFormattedTime() );
+	
+	
+	/**
+	* Geotagging
+	*
+	**/
+	function geotagSuccess(position) {
+		$('#the-location').removeClass('hide');
+		$map = $('#map');
+		$map.css( 'height', $map.css('width') );
+		  
+		var mapURL = 'https://maps.googleapis.com/maps/api/staticmap?';
+		mapURL += 'center=' + position.coords.latitude + ',' + position.coords.longitude;
+		mapURL += '&zoom=15';
+		mapURL += '&maptype=roadmap';
+		mapURL += '&size=' + $map.width() + 'x' + $map.width();
+		mapURL += '&markers=color:red%7Clabel:%7C' + position.coords.latitude + ',' + position.coords.longitude;
+		
+		var geocoder = new google.maps.Geocoder();
+		var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  		
+		geocoder.geocode({'latLng': latlng}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				var address = '';
+				var comps = results[0].address_components
+				
+				for( i=0; i<comps.length; i++ ) {
+					comp = comps[i];
+
+					switch( comp.types[0] ) {
+						case 'locality':
+							address += comp.long_name + ', ';
+						break;
+
+						case 'administrative_area_level_1':
+							address += comp.short_name + ' ';
+						break;
+					}
+				}
+				$map.find('p').text( address );
+				$geotagButton.find('span').remove();
+				$geotagButton.append( '<span>' + address + '</span>' );
+				
+			} else {
+			  alert('Geocoder failed due to: ' + status);
+			}
+		});
+		  
+		$map.html( '<p/><img src="' + mapURL + '" />' );
+		
+		  
+		$('#lat').val(position.coords.latitude);
+		$('#long').val(position.coords.longitude);
+		  
+		$('.buttons .geotag').addClass('active');
+
+		  /*
+		  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		  var myOptions = {
+			zoom: 15,
+			center: latlng,
+			mapTypeControl: false,
+			navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		  };
+		  var map = new google.maps.Map($map[0], myOptions);
+		  
+		  var marker = new google.maps.Marker({
+			  position: latlng, 
+			  map: map, 
+			  title:"You are here! (at least within a " + position.coords.accuracy + " meter radius)"
+		  });
+		  */
+	}
+	
+	function geotagError() {
+	
+	}
+		
+	
+	$geotagButton = $('.buttons .geotag');
+	
+	if( 'geolocation' in navigator ) {
+		$geotagButton.on('click', function(e) {
+			if( $geotagButton.hasClass('active') ) {
+				//Clean up
+				$geotagButton.removeClass('active').find('span').remove();
+				$('#the-location').addClass('hide');
+				$('#lat').val('');
+				$('#long').val('');
+				$('#map').html('');
+			} else {
+				navigator.geolocation.getCurrentPosition(geotagSuccess, geotagError);
+			}
+		});
+	} else {
+		$geotagButton.hide();
+	}
+	
+	
+	/**
+	* Add Media
+	*
+	**/
+	pingerooUploadSettings['drop_element'] = $('body')[0];
+	var uploader = new plupload.Uploader(  pingerooUploadSettings );
+	uploader.init();
+	
+	uploader.bind('FilesAdded', function(up, files) {
+		$.each(files, function(i, file) {
+			//console.log( file );
+		});
+		up.refresh(); 
+		uploader.start();
+	});
+	
+	uploader.bind('UploadProgress', function(up, file) {
+		var progressBarValue = up.total.percent;
+		//console.log('Progress...', up.total.percent, file);
+	});
+	
+	uploader.bind('FileUploaded', function(up, file, resp) {
+		// Called when file has finished uploading
+		console.log(resp.response);
+	});
+	
+	uploader.bind('UploadComplete', function(up, files) {
+		//console.log('Upload complete');
+	});
 });

@@ -17,20 +17,56 @@ border-radius:5px;
 padding:0.5em 1.2em;
 }
 fieldset {
-margin:1em 0.5em;
+margin:1em 0.5em 1em;
+}
+.main {
+float: left;
+width: 70%;
+overflow: auto;
+padding-bottom: 1em;
+}
+.options fieldset {
+margin-top:0;
+float:left;
+width:31%;
+padding-bottom:1em;
 }
 legend {
 font-size:1.8em;
+padding:0.1em 0 0.9em;
+}
+#header {
+overflow:auto;
+height:100%;
 }
 h1 {
 font-size:4.5em;
 font-weight:600;
 margin-bottom:1em;
+float:left;
+width:70%;
 }
 h1 a {
 text-decoration:none;
 }
+.controls {
+text-align:right;
+float:right;
+width:25%;
+}
+#character-count {
+margin-right: 0.8em;
+font-size: 2.2em;
+padding-top: 0.8em;
+display:inline-block;
+}
+input.submit {
+font-size:4em;
+}
 
+.hide {
+display:none;
+}
 .hidden {
 border: 0;
 clip: rect(0 0 0 0);
@@ -67,7 +103,7 @@ z-index:-1;
 
 
 #the-services {
-float:left;
+float:right;
 width:25%;
 }
 #the-services select {
@@ -86,8 +122,9 @@ top:-0.2em;
 user-select: none;
 }
 #the-services .group {
-font-size:85%;
+font-size:80%;
 color:#666;
+text-transform:uppercase;
 }
 #the-services ul {
 padding-left:0.3em;
@@ -110,21 +147,32 @@ font-size:85%;
 }
 
 
-#the-time {
-float:left;
-width:10%;
+.buttons {
+padding:1em 0;
 }
+.buttons button {
+font-size:1.75em;
+color:#ccc;
+transition:width 0.7s;
+}
+.buttons span {
+font-size: 70%;
+position: relative;
+top: -0.25em;
+font-weight: 300;
+}
+.buttons .active {
+color:#06f;
+}
+#the-time {
+}
+#map p {
+font-size:1.3em;
+margin-bottom:0.6em;
+}
+
+
 label {
 display:block;
 cursor:pointer;
-}
-#character-count {
-float: right;
-margin-right: 0.8em;
-font-size: 2.2em;
-padding-top: 0.8em;
-}
-input.submit {
-float:right;
-font-size:4em;
 }

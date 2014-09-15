@@ -43,8 +43,9 @@ function register_pingeroo_styles() {
 	wp_register_style( 'kit-kat-clock', get_template_directory_uri() . '/css/kit-kat-clock.css', array('reset'), NULL, 'all' );
 	
 	
-	wp_register_script( 'pingeroo', get_template_directory_uri() . '/js/pingeroo.js', array('jquery'), NULL, true );
 	wp_register_script( 'kit-kat-clock', get_template_directory_uri() . '/js/kit-kat-clock.js', array('jquery'), NULL, true );
+	wp_register_script( 'google-maps', 'http://maps.google.com/maps/api/js?sensor=false', array(), NULL, true );
+	wp_register_script( 'pingeroo', get_template_directory_uri() . '/js/pingeroo.js', array('jquery', 'google-maps', 'plupload'), NULL, true );
 }
 add_action( 'init', 'register_pingeroo_styles' );
 
@@ -56,5 +57,41 @@ function pingeroo_ajaxurl() {
 <?php
 }
 add_action('wp_head','pingeroo_ajaxurl');
+
+function pingeroo_upload_settings() {
+$settings = (object) array(
+	'runtimes' => 'html5,flash,silverlight,html4',
+	'browse_button' => 'media-upload',
+	'url' => admin_url('admin-ajax.php'),
+	'flash_swf_url' => includes_url() . 'js/plupload/plupload.flash.swf',
+	'silverlight_xap_url' => includes_url() . 'js/plupload/plupload.silverlight.xap',
+	'file_data_name' => 'test',
+	'multipart_params' => (object) array(
+		'_wpnonce' => wp_create_nonce( 'pingeroo-add-media' ),
+		'action' => 'pingeroo_front_end_add_media'
+	),
+	'filters' => (object) array(
+		'mime_types' => array(
+			(object) array(
+				'title' => 'Image files',
+				'extensions' => 'jpg,gif,png'
+			)
+		)
+	)
+);
+?>
+<script>
+var pingerooUploadSettings = <?php echo json_encode( $settings ); ?>;
+</script>
+<?php
+}
+add_action('wp_footer', 'pingeroo_upload_settings');
+
+function pingeroo_front_end_add_media() {
+	var_dump( $_REQUEST, $_FILES );
+	die();
+}
+add_action( 'wp_ajax_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );
+add_action( 'wp_ajax_nopriv_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );
 
 include( 'functions-pingeroo.php' );
