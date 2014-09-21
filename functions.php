@@ -88,7 +88,18 @@ var pingerooUploadSettings = <?php echo json_encode( $settings ); ?>;
 add_action('wp_footer', 'pingeroo_upload_settings');
 
 function pingeroo_front_end_add_media() {
-	var_dump( $_REQUEST, $_FILES );
+	//var_dump( $_REQUEST, $_FILES );
+	
+	//Save it to the media library
+	
+	$random_color_arr = array('0099ff', 'ff0099', 'aa0676', '74b317', '62b4ce', '7881ac');
+	shuffle( $random_color_arr );
+	
+	$response = (object) array(
+		'img' => 'http://dummyimage.com/140/' . $random_color_arr[0] . '/&text=' . $_FILES['test']['name']
+	);
+	wp_send_json( $response );
+	
 	die();
 }
 add_action( 'wp_ajax_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );

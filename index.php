@@ -6,7 +6,6 @@ wp_enqueue_script('pingeroo');
 //wp_enqueue_script('kit-kat-clock');
 get_header();
 ?>
-
 <div id="content" role="main">
 	<form method="post" action="<?php echo get_site_url(); ?>">
 		
@@ -29,13 +28,21 @@ get_header();
 				<textarea id="message" name="message" rows="1"></textarea>
 			</fieldset>
 			
+			<div class="added-media">
+				<!--div class="media">
+					<p class="percent">0%</p>
+					<div class="progress">
+						<div class="slice first-half"></div>
+						<div class="slice second-half"></div>
+					</div>
+				</div-->
+			</div>
+			
 			<p class="buttons">
 				<button title="Media" class="media" id="media-upload"><i class="icon-pictures"></i></button>
 				<button title="Schedule" class="schedule"><i class="icon-clock"></i></button>
 				<button title="Geotag" class="geotag"><i class="icon-location"></i></button>
 			</p>
-			
-			<div class="added-media"></div>
 			
 			<div class="options">
 				<fieldset id="the-time" class="hide">
@@ -67,5 +74,9 @@ get_header();
 			<li><a href="#">Recent Pingeroo update for all to see.</a></li>
 		</ul>
 	</section>
+</div>
+
+<div id="drop-target">
+	<h2><i class="icon-upload" aria-hidden="true"></i>Drop files here to upload</h2>
 </div>
 <?php get_footer(); ?>

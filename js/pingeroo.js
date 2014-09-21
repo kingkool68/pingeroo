@@ -16,11 +16,6 @@ jQuery(document).ready(function($) {
 		var clonedMessage = document.getElementById('message-clone')
 		clonedMessage.value = this.value;
 		this.style.height = clonedMessage.scrollHeight + 'px';
-		/*
-		this.style.height = 'auto';
-		this.style.height = this.scrollHeight + 'px';
-		*/
-		
 	}).focus();
 	
 	$('form').on('submit', function(e) {
@@ -288,29 +283,85 @@ jQuery(document).ready(function($) {
 	* Add Media
 	*
 	**/
+	$('body').on('dragover', function(e) {
+		$('html').addClass('drag-over');
+		return false;
+	}).on('drop', function(e) {
+		e.preventDefault();
+		$('html').removeClass('drag-over');
+	});
+	$('#drop-target').on('dragleave', function(e) {
+		$('html').removeClass('drag-over');
+	});
+	
 	pingerooUploadSettings['drop_element'] = $('body')[0];
 	var uploader = new plupload.Uploader(  pingerooUploadSettings );
 	uploader.init();
 	
 	uploader.bind('FilesAdded', function(up, files) {
+		$('.buttons .media').addClass('active');
 		$.each(files, function(i, file) {
-			//console.log( file );
+			var newFileHTML = '<div id="' + file.id + '" class="media media-is-hidden">';
+				newFileHTML += '<a href="#" class="close">X</a>';
+				newFileHTML += '<p class="percent">0%</p>'; 
+				newFileHTML += '<div class="progress">';
+					newFileHTML += '<div class="slice first-half" />';
+					newFileHTML += '<div class="slice second-half" />';
+				newFileHTML += '</div>'
+			newFileHTML += '</div>';
+			
+			$('.added-media').append( newFileHTML );
 		});
-		up.refresh(); 
+		//up.refresh();
 		uploader.start();
 	});
 	
 	uploader.bind('UploadProgress', function(up, file) {
-		var progressBarValue = up.total.percent;
-		//console.log('Progress...', up.total.percent, file);
+		updateUploadProgress( file.percent, $('#' + file.id) );
+	});
+	uploader.bind('BeforeUpload',function(up, file) {
+		$('#' + file.id).removeClass('media-is-hidden');
 	});
 	
 	uploader.bind('FileUploaded', function(up, file, resp) {
 		// Called when file has finished uploading
-		console.log(resp.response);
+		data = $.parseJSON( resp.response );
+		$file = $('#' + file.id);
+		$file.append( '<img src="' + data.img + '" class="preloading" draggable="false">' );
+		$file.find('.progress, .percent').fadeOut(900, function() {
+			$(this).siblings('.preloading').removeClass('preloading');
+		});
 	});
 	
 	uploader.bind('UploadComplete', function(up, files) {
 		//console.log('Upload complete');
+	});
+	
+	function updateUploadProgress(percent, $elem) {
+		var degrees = percent * 3.6;
+		
+		$elem.find('p').text( percent + '%' );
+		
+		if( percent > 50 ) {
+			$elem.find('.progress').addClass('greater-than-50');
+			$elem.find('.first-half').css('transform', 'rotate(180deg)');
+			$elem.find('.second-half').css('transform', 'rotate(' + degrees + 'deg)');
+		} else {
+			$elem.find('.progress').removeClass('greater-than-50');
+			$elem.find('.first-half').css('transform', 'rotate(' + degrees + 'deg)');
+			$elem.find('.second-half').css('transform', 'rotate(' + degrees + 'deg)');
+		}
+	}
+	
+	$('.added-media').on('click.media-close', '.close', function(e) {
+		e.preventDefault();
+		
+		
+		$(this).parent().addClass('zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+			$(this).remove();
+			if( $('.added-media .media').length < 1 ) {
+				$('.buttons .media').removeClass('active');
+			}
+		});
 	});
 });

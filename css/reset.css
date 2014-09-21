@@ -364,6 +364,7 @@ font-style: normal;
 .icon-location,
 .icon-cog,
 .icon-clock,
+.icon-upload,
 .icon-warning,
 .icon-pictures,
 .icon-flow-cascade,
@@ -391,6 +392,9 @@ content: "\e601";
 }
 .icon-clock:before {
 content: "\e602";
+}
+.icon-upload:before {
+content: "\e60a";
 }
 .icon-warning:before {
 content: "\e603";
