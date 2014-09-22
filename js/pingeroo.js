@@ -125,7 +125,12 @@ jQuery(document).ready(function($) {
 		checked.each(function(index, element) {
 			values.push(this.value);
 		});
-		var groupName = prompt('What do you want to name your new group?');
+		var groupName = $.trim( prompt('What do you want to name your new group?') );
+		if( !groupName ) {
+			alert( 'You didn\'t enter a group name.' );
+			return false;
+		}
+		
 		
 		var data = {
 			'action': 'add_pingeroo_group',
@@ -274,6 +279,11 @@ jQuery(document).ready(function($) {
 				navigator.geolocation.getCurrentPosition(geotagSuccess, geotagError);
 			}
 		});
+		
+		var showByDefault = true;
+		if( showByDefault ) {
+			$geotagButton.click();
+		}
 	} else {
 		$geotagButton.hide();
 	}

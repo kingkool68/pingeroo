@@ -105,4 +105,9 @@ function pingeroo_front_end_add_media() {
 add_action( 'wp_ajax_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );
 add_action( 'wp_ajax_nopriv_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );
 
+function get_pingeroo_options() {
+	return get_option('pingeroo');
+}
+
 include( 'functions-pingeroo.php' );
+include( 'functions-pingeroo-options.php' );

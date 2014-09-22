@@ -1,0 +1,30 @@
+.groups {
+padding:0 0.4em 1em;
+}
+.groups ul {
+border:1px solid #ccc;
+max-width:450px;
+}
+.groups li {
+padding:0.4em 0.5em;
+border-bottom:0.1em solid #ccc;
+margin-bottom:0;
+background-color:#fff;
+cursor:-webkit-zoom-grabbing;
+cursor:grabbing;
+}
+.groups li:last-of-type {
+border-bottom:0 none;
+}
+.groups .drop-zone {
+height:18px;
+background-color:#fff;
+}
+.groups a {
+color:red;
+visibility:hidden;
+padding-left:0.5em;
+}
+.groups li:hover a {
+visibility:visible;
+}

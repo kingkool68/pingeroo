@@ -4,6 +4,10 @@ wp_enqueue_style('kit-kat-clock');
 
 wp_enqueue_script('pingeroo');
 //wp_enqueue_script('kit-kat-clock');
+
+show_admin_bar( false );
+remove_action('wp_head', '_admin_bar_bump_cb');
+
 get_header();
 ?>
 <div id="content" role="main">
@@ -13,6 +17,7 @@ get_header();
 			<legend><i class="icon-flow-tree"></i> Pingeroo to</legend>
 			<select>
 				<?php echo get_pingeroo_group_options(); ?>
+				<option>-----</option>
 				<option value="all">All</option>
 				<option value="+1">+ Create a new group</option>	
 			</select>

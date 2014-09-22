@@ -81,7 +81,11 @@ function list_pingeroo_services() {
 }
 
 function get_pingeroo_groups() {
-	return get_option( 'pingeroo-groups', array() );
+	$groups = get_option( 'pingeroo-groups' );
+	if( !$groups ) {
+		$groups = array();
+	}
+	return $groups;
 }
 
 function get_pingeroo_group_options() {
@@ -96,7 +100,7 @@ function get_pingeroo_group_options() {
 
 function add_pingeroo_group() {
 	if( !isset( $_REQUEST['nonce'] ) || !wp_verify_nonce( $_REQUEST['nonce'], 'pingeroo-create-group' ) ) {
-		header("HTTP/1.1 404 Not Found");
+		status_header( 404 );
 		echo 'Bad Nonce!';
 		die();
 	}
