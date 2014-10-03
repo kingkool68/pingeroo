@@ -109,7 +109,9 @@ jQuery(document).ready(function($) {
 				var toCheck = true;
 			}
 			
-			$this.parent().siblings('ul').find('input[name="pingeroo-services[]"]').each(function(index, element) {
+			$this.parent().siblings('ul')
+			.find('input[name="pingeroo-services[]"]')
+			.each(function(index, element) {
 				this.checked = toCheck;
 			});
 		}
@@ -155,7 +157,7 @@ jQuery(document).ready(function($) {
 			
 			$('select .' + data.name, $services).prop('selected', true);
 			
-		}).fail( function( response ) {
+		}).fail( function( response, textStatus, errorThrown ) {
 			alert('Error: ' + response.responseText );
 		});
 		
