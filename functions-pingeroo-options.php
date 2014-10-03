@@ -42,7 +42,7 @@ function pingeroo_settings_page() {
 			<p>Drag the group names to reorder them.</p>
 			<ul>
 			<?php foreach( $groups as $name => $val ): ?>
-				<li><span class="name"><?php echo $name; ?></span> <input type="hidden" name="pingeroo_groups[<?php echo $name; ?>]" value="<?php echo $val ?>"> <a href="#">Delete</a></li>
+				<li><span class="name"><?php echo $name; ?></span> <input type="hidden" name="pingeroo[groups][<?php echo $name; ?>]" value="<?php echo $val ?>"> <a href="#">Delete</a></li>
 			<?php endforeach; ?>
 			</ul>
 		</div>
@@ -50,8 +50,6 @@ function pingeroo_settings_page() {
 	
 	<pre>
 	<?php var_dump( get_pingeroo_options() ); ?>
-	
-	<?php var_dump( get_option( 'pingeroo-groups' ) ); ?>
 	</pre>
 	
 	<input type="hidden" name="action" value="pingeroo-save-settings">
@@ -64,6 +62,7 @@ function pingeroo_settings_page() {
 }
 
 function pingeroo_save_settings_page() {
+	//Verify the nonce
 	if(
 		!isset( $_POST['save-pingeroo-settings'] ) ||
 		!wp_verify_nonce( $_POST['save-pingeroo-settings'], 'Save Pingeroo Settings' )
@@ -71,19 +70,29 @@ function pingeroo_save_settings_page() {
 		return;
 	}
 	
+	//Merge old options with new options
 	$new_options = $_POST['pingeroo'];
 	$old_options = get_option( 'pingeroo' );
 	if( !$old_options ) {
 		$old_options = array();
 	}
-	
 	$options = wp_parse_args( $new_options, $old_options );
 	
+	//If the default-group value isn't a valid group then we need to set the default-group value to empty. 
+	$group_keys = array_keys($options['groups']);
+	$group_keys = array_map( 'sanitize_title', $group_keys );
+	
+	if( 
+		!isset($options['default-group']) ||
+		!in_array( $options['default-group'], $group_keys)
+	) {
+		$options['default-group'] = '';
+	}
+	
+	//Save the $options
 	update_option( 'pingeroo', $options );
 	
-	$groups = $_POST['pingeroo_groups'];
-	update_option( 'pingeroo-groups', $groups );
-	
+	//Redirect with a success message
 	wp_redirect( admin_url('options-general.php?page=pingeroo&updated=success') );
 }
 add_action( 'admin_post_pingeroo-save-settings', 'pingeroo_save_settings_page' );

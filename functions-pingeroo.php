@@ -2,12 +2,27 @@
 
 /* TO DO:
 	
-	Make an admin page to manage groups: reorder, delete, set default group.
-	Submit the data and then post to each network.
+	Make the front end responsive
+	
+	Add a setting for changing the touch icons for the theme
+	
+	Submit the data, save it as a Post, and then post the message to each network when the Post is published.
 		- https://developer.linkedin.com/documents/share-api
 		- https://api.twitter.com/1.1/statuses/update.json
 		- https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed 
 */
+
+
+/*
+ * SERVICES
+ * 
+ */
+function pingeroo_facebook_scope( $scope ) {
+	//We need to change the scope so we can publish on behalf of someone
+	$scope[] = 'publish_actions';
+	return $scope;
+}
+add_filter( 'keyring_facebook_scope', 'pingeroo_facebook_scope' );
 
 function get_pingeroo_services() {
 	//Initialize instance of Keyring
@@ -80,46 +95,59 @@ function list_pingeroo_services() {
 	echo $output;
 }
 
+
+
+/*
+ * GROUPS
+ * 
+ */
 function get_pingeroo_groups() {
-	$groups = get_option( 'pingeroo-groups' );
-	if( !$groups ) {
-		$groups = array();
+	$options = get_pingeroo_options();
+	if( !isset( $options['groups'] ) ) {
+		$options['groups'] = array();
 	}
-	return $groups;
+	return $options['groups'];
 }
 
 function get_pingeroo_group_options() {
-	$groups = get_pingeroo_groups();
 	$options = get_pingeroo_options();
 	$default_group = $options['default-group'];
+	$groups = get_pingeroo_groups();
 	
 	$output = array('<option value="-1">Select a group</option>');
 	foreach( $groups as $name => $val ) {
 		$class_name = sanitize_title( $name );
-		$output[] = '<option value="' . esc_attr($val) . '" class="' . $class_name . '" '. selected($class_name, $default_group) . '>' . $name . '</option>';
+		$output[] = '<option value="' . esc_attr($val) . '" class="' . $class_name . '" '. selected($class_name, $default_group, false) . '>' . $name . '</option>';
 	}
 	
 	return implode("\n", $output );
 }
 
 function add_pingeroo_group() {
-	if( !isset( $_REQUEST['nonce'] ) || !wp_verify_nonce( $_REQUEST['nonce'], 'pingeroo-create-group' ) ) {
+	if(
+		!isset( $_REQUEST['nonce'] ) ||
+		!wp_verify_nonce( $_REQUEST['nonce'], 'pingeroo-create-group' )
+	) {
 		status_header( 404 );
 		echo 'Bad Nonce!';
 		die();
 	}
-	$groups = get_pingeroo_groups();
 	
+	$options = get_pingeroo_options();
+	$groups = get_pingeroo_groups();
+
 	$name = stripslashes( sanitize_text_field($_REQUEST['name']) );
 	$values = preg_replace('/[^0-9,]/i', '', $_REQUEST['values']);
 	
 	$groups[ $name ] = $values;
-	update_option( 'pingeroo-groups', $groups );
+	$options['groups'] = $groups;
+	update_option( 'pingeroo', $options );
 	
 	$data = (object) array(
 		'html' => get_pingeroo_group_options(),
 		'name' => sanitize_title($name)
 	);
+	
 	wp_send_json_success( $data );
 	
 	die();
@@ -127,11 +155,16 @@ function add_pingeroo_group() {
 add_action( 'wp_ajax_add_pingeroo_group', 'add_pingeroo_group' );
 add_action( 'wp_ajax_nopriv_add_pingeroo_group', 'add_pingeroo_group' );
 
+
+/*
+ * POSTING TO SERVICES
+ * 
+ */
 function do_pingeroo() {
 	if( !isset( $_POST['pingeroo-nonce'] ) || !wp_verify_nonce( $_POST['pingeroo-nonce'], 'do-pingeroo' ) ) {
 		return;
 	}
-	 //Let WordPress to the nice formatting and then we need to convert HTML entities to actual characters again.
+	 //Let WordPress do the nice formatting and then we need to convert HTML entities to actual characters again.
 	$message = html_entity_decode( wptexturize( $_POST['message'] ) );
 	$account_ids = array_map( 'intval', $_POST['pingeroo-services'] );
 	
@@ -407,12 +440,6 @@ function pingeroo_post_to_facebook($message, $service) {
 	}
 	**/
 }
-function pingeroo_facebook_scope( $scope ) {
-	//We need to change the scope so we can publish on behalf of someone
-	$scope[] = 'publish_actions';
-	return $scope;
-}
-add_filter( 'keyring_facebook_scope', 'pingeroo_facebook_scope' );
 
 function pingeroo_post_to_linkedin($message, $service) {
 	echo 'Post to LinkedIn';
