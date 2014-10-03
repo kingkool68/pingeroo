@@ -90,9 +90,13 @@ function get_pingeroo_groups() {
 
 function get_pingeroo_group_options() {
 	$groups = get_pingeroo_groups();
+	$options = get_pingeroo_options();
+	$default_group = $options['default-group'];
+	
 	$output = array('<option value="-1">Select a group</option>');
 	foreach( $groups as $name => $val ) {
-		$output[] = '<option value="' . esc_attr($val) . '" class="' . sanitize_title( $name ) . '">' . $name . '</option>';
+		$class_name = sanitize_title( $name );
+		$output[] = '<option value="' . esc_attr($val) . '" class="' . $class_name . '" '. selected($class_name, $default_group) . '>' . $name . '</option>';
 	}
 	
 	return implode("\n", $output );

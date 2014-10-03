@@ -37,7 +37,10 @@ jQuery(document).ready(function($) {
 		$this = $(this);
 		var val = $this.val();
 		if( val == '-1' ) {
-			return;
+			$('#the-services input[type="checkbox"]').prop({
+				'checked': false,
+				'indeterminate': false	
+			});
 		}
 		
 		if( val == 'all' ) {
@@ -73,7 +76,7 @@ jQuery(document).ready(function($) {
 			var id = ids[i];
 			$('input[value="' + id + '"]', $services).prop('checked', true).change();
 		}
-	});
+	}).change();
 	
 	$('#the-services').on('change', 'input[type="checkbox"]', function() {
 		//Is this part of a group? 
