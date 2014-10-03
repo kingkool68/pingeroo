@@ -50,6 +50,8 @@ function pingeroo_settings_page() {
 	
 	<pre>
 	<?php var_dump( get_pingeroo_options() ); ?>
+	
+	<?php var_dump( get_option( 'pingeroo-groups' ) ); ?>
 	</pre>
 	
 	<input type="hidden" name="action" value="pingeroo-save-settings">
@@ -78,9 +80,14 @@ function pingeroo_save_settings_page() {
 	$options = wp_parse_args( $new_options, $old_options );
 	
 	update_option( 'pingeroo', $options );
+	
+	$groups = $_POST['pingeroo_groups'];
+	update_option( 'pingeroo-groups', $groups );
+	
 	wp_redirect( admin_url('options-general.php?page=pingeroo&updated=success') );
 }
 add_action( 'admin_post_pingeroo-save-settings', 'pingeroo_save_settings_page' );
+
 
 function pingeroo_settings_notice() {
 	$screen = get_current_screen();
