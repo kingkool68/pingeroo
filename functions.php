@@ -110,4 +110,5 @@ function get_pingeroo_options() {
 }
 
 include( 'functions-pingeroo.php' );
+include( 'functions-pingeroo-touch-icons.php' );
 include( 'functions-pingeroo-options.php' );

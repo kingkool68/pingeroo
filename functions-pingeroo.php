@@ -4,8 +4,6 @@
 	
 	Make the front end responsive
 	
-	Add a setting for changing the touch icons for the theme
-	
 	Submit the data, save it as a Post, and then post the message to each network when the Post is published.
 		- https://developer.linkedin.com/documents/share-api
 		- https://api.twitter.com/1.1/statuses/update.json

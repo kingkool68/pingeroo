@@ -20,11 +20,32 @@ function pingeroo_settings_page() {
 	$groups = get_pingeroo_groups();
 	$options = get_pingeroo_options();
 ?>
-<form action="<?php esc_attr_e( admin_url('admin-post.php') ); ?>" method="post">
+<form action="<?php esc_attr_e( admin_url('admin-post.php') ); ?>" method="post" enctype="multipart/form-data">
 	
 	<h1>Pingeroo Settings</h1>
 	
+	<h2>General</h2>
+	
+	<fieldset>
+		<label for="pingeroo-touch-icon">Upload a Touch Icon</label>
+		<?php
+		$touch_icon_id = 0;
+		if( $options && isset( $options['touch-icon-id'] ) ) {
+			$touch_icon_id = $options['touch-icon-id'];
+			$img = wp_get_attachment_image_src( $touch_icon_id, array(76,76) );
+			if( isset( $img[0] ) ) {
+				echo '<img id="touch-icon-preview" src="' . $img[0] .'">';
+			}
+		}
+		
+		?>
+		<input type="file" id="pingeroo-touch-icon" name="pingeroo-touch-icon-file">
+		<input type="hidden" name="pingeroo[touch-icon-id]" value="<?php echo $touch_icon_id; ?>">
+	</fieldset>
+	
+	<fieldset>
 	<label><input type="checkbox" name="pingeroo[geotag-by-default]" value="true" id="geotag-by-default" <?php checked( $options['geotag-by-default'], 'true' ); ?>> Add location by default (saves a click)</label>
+	</fieldset>
 	
 	<?php if( $groups ): ?>
 		
@@ -48,9 +69,9 @@ function pingeroo_settings_page() {
 		</div>
 	<?php endif; ?>
 	
-	<pre>
+	<!--pre>
 	<?php var_dump( get_pingeroo_options() ); ?>
-	</pre>
+	</pre -->
 	
 	<input type="hidden" name="action" value="pingeroo-save-settings">
 	<?php
@@ -69,6 +90,20 @@ function pingeroo_save_settings_page() {
 	) {
 		return;
 	}
+	
+	//Handle touch icon file upload
+	if( isset( $_FILES['pingeroo-touch-icon-file'] ) ) {
+		add_pingeroo_touch_icon_sizes();
+		
+		$post_data = array(
+			'post_title' => 'Pingeroo Touch Icon'
+		);
+		$attachment_id = media_handle_upload( 'pingeroo-touch-icon-file', 0, $post_data );
+		if( $attachment_id && isset( $_POST['pingeroo'] ) ) {
+			$_POST['pingeroo']['touch-icon-id'] = $attachment_id;
+		}
+	}
+	
 	
 	//Merge old options with new options
 	$new_options = $_POST['pingeroo'];
