@@ -10,6 +10,75 @@
 		- https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed 
 */
 
+/*
+ * THEME INIT
+ * 
+ */
+
+function register_pingeroo_taxonomies() {
+
+	$labels = array(
+		'name'                       => 'Services',
+		'singular_name'              => 'Service',
+		'menu_name'                  => 'Services',
+		'all_items'                  => 'All Services',
+		'parent_item'                => 'Parent Service',
+		'parent_item_colon'          => 'Parent Service:',
+		'new_item_name'              => 'New Service Name',
+		'add_new_item'               => 'Add New Service',
+		'edit_item'                  => 'Edit Service',
+		'update_item'                => 'Update Service',
+		'separate_items_with_commas' => 'Separate services with commas',
+		'search_items'               => 'Search Services',
+		'add_or_remove_items'        => 'Add or remove services',
+		'choose_from_most_used'      => 'Choose from the most used services',
+		'not_found'                  => 'Not Found',
+	);
+	$args = array(
+		'labels'                     => $labels,
+		'hierarchical'               => false,
+		'public'                     => true,
+		'show_ui'                    => true,
+		'show_admin_column'          => true,
+		'show_in_nav_menus'          => false,
+		'show_tagcloud'              => false,
+	);
+	register_taxonomy( 'pingeroo-services', array( 'post' ), $args );
+	
+	
+	
+	$labels = array(
+		'name'                       => 'Mentions',
+		'singular_name'              => 'Mention',
+		'menu_name'                  => 'Mentions',
+		'all_items'                  => 'All Mentions',
+		'parent_item'                => 'Parent Mention',
+		'parent_item_colon'          => 'Parent Mention:',
+		'new_item_name'              => 'New Mention Name',
+		'add_new_item'               => 'Add New Mention',
+		'edit_item'                  => 'Edit Mention',
+		'update_item'                => 'Update Mention',
+		'separate_items_with_commas' => 'Separate mentions with commas',
+		'search_items'               => 'Search Mentions',
+		'add_or_remove_items'        => 'Add or remove mentions',
+		'choose_from_most_used'      => 'Choose from the most used mentions',
+		'not_found'                  => 'Not Found',
+	);
+	$args = array(
+		'labels'                     => $labels,
+		'hierarchical'               => false,
+		'public'                     => true,
+		'show_ui'                    => true,
+		'show_admin_column'          => true,
+		'show_in_nav_menus'          => false,
+		'show_tagcloud'              => false,
+	);
+	register_taxonomy( 'pingeroo-mentions', array( 'post' ), $args );
+
+}
+add_action( 'init', 'register_pingeroo_taxonomies', 0 );
+
+
 
 /*
  * SERVICES
