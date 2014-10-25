@@ -317,7 +317,7 @@ jQuery(document).ready(function($) {
 		$('.buttons .media').addClass('active');
 		$.each(files, function(i, file) {
 			var newFileHTML = '<div id="' + file.id + '" class="media media-is-hidden">';
-				newFileHTML += '<a href="#" class="close">X</a>';
+				newFileHTML += '<a href="#" class="close" title="Remove image">&times;</a>';
 				newFileHTML += '<p class="percent">0%</p>'; 
 				newFileHTML += '<div class="progress">';
 					newFileHTML += '<div class="slice first-half" />';
@@ -370,7 +370,6 @@ jQuery(document).ready(function($) {
 	
 	$('.added-media').on('click.media-close', '.close', function(e) {
 		e.preventDefault();
-		
 		
 		$(this).parent().addClass('zoomOut').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
 			$(this).remove();

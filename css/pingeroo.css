@@ -199,10 +199,15 @@ top:0.5em;
 right:0.5em;
 font-size:2em;
 opacity:0;
-transition: all 250ms;
+transition: all 175ms;
 z-index:15;
 color:red;
 text-decoration:none;
+padding:0.15em 0.35em;
+background-color:#fff;
+text-align:center;
+border-radius:50%;
+box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
 }
 .added-media .media:hover .close,
 .added-media .close:focus {
