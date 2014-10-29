@@ -4,12 +4,38 @@ jQuery(document).ready(function($) {
 	*
 	**/
 	
+	$('#header .submit').on('click', function() {
+		$('#content form').submit();
+	});
+	
+	
+	$('form').on('submit', function(e) {
+		e.preventDefault();
+		var theMessage = $.trim( $message.val() );
+		if( !theMessage ) {
+			return
+		}
+		
+		$.ajax({
+			type: "POST",
+			url: ajaxurl,
+			data: $( this ).serialize()
+		}).success( function( resp ) {
+			$message.val( defaultMessageText ).keyup().focus();
+			console.log( resp );
+			
+		}).fail( function( response, textStatus, errorThrown ) {
+			alert('Error: ' + response.responseText );
+		});
+	});
+	
 	
 	/**
 	* The Message
 	*
 	**/
 	var $message = $('#message');
+	var defaultMessageText = $message.val();
 	$('<textarea id="message-clone" rows="1" />').insertAfter('#message');
 	$message.on('keyup', function() {
 		$('#character-count').html( this.value.length );
@@ -17,16 +43,6 @@ jQuery(document).ready(function($) {
 		clonedMessage.value = this.value;
 		this.style.height = clonedMessage.scrollHeight + 'px';
 	}).focus();
-	
-	$('form').on('submit', function(e) {
-		
-		var theMessage = $.trim( $message.val() );
-		if( !theMessage ) {
-			e.preventDefault();
-			return
-		}
-	});
-
 
 
 	/**
@@ -287,7 +303,7 @@ jQuery(document).ready(function($) {
 		
 		var showByDefault = true;
 		if( showByDefault ) {
-			$geotagButton.click();
+			//$geotagButton.click();
 		}
 	} else {
 		$geotagButton.hide();
