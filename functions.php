@@ -2,40 +2,6 @@
 // post thumbnail support
 add_theme_support( 'post-thumbnails' );
 	
-// custom menu support
-add_theme_support( 'menus' );
-if ( function_exists( 'register_nav_menus' ) ) {
-	register_nav_menus(
-		array(
-	  		  'header_menu' => 'Header Menu',
-	  		  'sidebar_menu' => 'Sidebar Menu',
-	  		  'footer_menu' => 'Footer Menu'
-	  	)
-	);
-}
-	
-// Removes Trackbacks from the comment cout
-add_filter('get_comments_number', 'comment_count', 0);
-function comment_count( $count ) {
-	if ( ! is_admin() ) {
-		global $id;
-		$comments_by_type = &separate_comments(get_comments('status=approve&post_id=' . $id));
-		return count($comments_by_type['comment']);
-	} else {
-		return $count;
-	}
-}
-	
-// category id in body and post class
-function category_id_class($classes) {
-	global $post;
-	foreach((get_the_category($post->ID)) as $category)
-		$classes [] = 'cat-' . $category->cat_ID . '-id';
-		return $classes;
-}
-	add_filter('post_class', 'category_id_class');
-	add_filter('body_class', 'category_id_class');
-	
 //Register CSS
 function register_pingeroo_styles() {
 	wp_register_style( 'reset', get_template_directory_uri() . '/css/reset.css', array(), NULL, 'all' );
@@ -49,66 +15,29 @@ function register_pingeroo_styles() {
 }
 add_action( 'init', 'register_pingeroo_styles' );
 
-function pingeroo_ajaxurl() {
-?>
-<script>
-	var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
-</script>
-<?php
-}
-add_action('wp_head','pingeroo_ajaxurl');
 
-function pingeroo_upload_settings() {
-$settings = (object) array(
-	'runtimes' => 'html5,flash,silverlight,html4',
-	'browse_button' => 'media-upload',
-	'url' => admin_url('admin-ajax.php'),
-	'flash_swf_url' => includes_url() . 'js/plupload/plupload.flash.swf',
-	'silverlight_xap_url' => includes_url() . 'js/plupload/plupload.silverlight.xap',
-	'file_data_name' => 'test',
-	'multipart_params' => (object) array(
-		'_wpnonce' => wp_create_nonce( 'pingeroo-add-media' ),
-		'action' => 'pingeroo_front_end_add_media'
-	),
-	'filters' => (object) array(
-		'mime_types' => array(
-			(object) array(
-				'title' => 'Image files',
-				'extensions' => 'jpg,gif,png'
-			)
-		)
-	)
-);
-?>
-<script>
-var pingerooUploadSettings = <?php echo json_encode( $settings ); ?>;
-</script>
-<?php
+function pingeroo_frontend_ajaxurl() {
+	?>
+	<script>
+		var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+	</script>
+	<?php
 }
-add_action('wp_footer', 'pingeroo_upload_settings');
-
-function pingeroo_front_end_add_media() {
-	//var_dump( $_REQUEST, $_FILES );
-	
-	//Save it to the media library
-	
-	$random_color_arr = array('0099ff', 'ff0099', 'aa0676', '74b317', '62b4ce', '7881ac');
-	shuffle( $random_color_arr );
-	
-	$response = (object) array(
-		'img' => 'http://dummyimage.com/140/' . $random_color_arr[0] . '/&text=' . $_FILES['test']['name']
-	);
-	wp_send_json( $response );
-	
-	die();
-}
-add_action( 'wp_ajax_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );
-add_action( 'wp_ajax_nopriv_pingeroo_front_end_add_media', 'pingeroo_front_end_add_media' );
+add_action('wp_head','pingeroo_frontend_ajaxurl');
 
 function get_pingeroo_options() {
-	return get_option('pingeroo');
+	$options = get_option('pingeroo');
+	$defaults = array( 'pre-fill' );
+	foreach( $defaults as $key ) {
+		if( !isset( $options[ $key ] ) ) {
+			$options[ $key ] = '';
+		}
+	}
+	
+	return $options;
 }
 
-include( 'functions-pingeroo.php' );
-include( 'functions-pingeroo-touch-icons.php' );
-include( 'functions-pingeroo-options.php' );
+include( 'functions/pingeroo.php' );
+include( 'functions/pingeroo-touch-icons.php' );
+include( 'functions/pingeroo-admin-options.php' );
+include( 'functions/pingeroo-media.php' );

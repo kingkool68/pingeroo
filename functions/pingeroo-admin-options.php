@@ -30,7 +30,7 @@ function pingeroo_settings_page() {
 		<label for="pingeroo-touch-icon">Upload a Touch Icon</label>
 		<?php
 		$touch_icon_id = 0;
-		if( $options && isset( $options['touch-icon-id'] ) ) {
+		if( $options && isset( $options['touch-icon-id'] ) && !is_wp_error( $options['touch-icon-id'] ) ) {
 			$touch_icon_id = $options['touch-icon-id'];
 			$img = wp_get_attachment_image_src( $touch_icon_id, array(76,76) );
 			if( isset( $img[0] ) ) {
@@ -45,6 +45,10 @@ function pingeroo_settings_page() {
 	
 	<fieldset>
 	<label><input type="checkbox" name="pingeroo[geotag-by-default]" value="true" id="geotag-by-default" <?php checked( $options['geotag-by-default'], 'true' ); ?>> Add location by default (saves a click)</label>
+	</fieldset>
+	<fieldset class="pre-fill">
+		<label for="pingeroo-pre-fill">Pre-fill Message</label>
+		<textarea id="pingeroo-pre-fill" name="pingeroo[pre-fill]"><?php echo $options['pre-fill']; ?></textarea>
 	</fieldset>
 	
 	<?php if( $groups ): ?>
@@ -71,7 +75,7 @@ function pingeroo_settings_page() {
 	
 	<!--pre>
 	<?php var_dump( get_pingeroo_options() ); ?>
-	</pre -->
+	</pre-->
 	
 	<input type="hidden" name="action" value="pingeroo-save-settings">
 	<?php
@@ -107,7 +111,10 @@ function pingeroo_save_settings_page() {
 	
 	//Merge old options with new options
 	$new_options = $_POST['pingeroo'];
-	$old_options = get_option( 'pingeroo' );
+	if( !isset( $new_options['geotag-by-default'] ) ) {
+		$new_options['geotag-by-default'] = 'FALSE';
+	}
+	$old_options = get_pingeroo_options();
 	if( !$old_options ) {
 		$old_options = array();
 	}

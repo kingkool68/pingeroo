@@ -1,6 +1,14 @@
 fieldset {
 padding-bottom:1.2em;
 }
+.pre-fill label {
+display:block;
+padding-bottom:1em;
+}
+.pre-fill textarea {
+max-width:450px;
+width:100%;
+}
 #touch-icon-preview,
 #pingeroo-touch-icon {
 display:block;

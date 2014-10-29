@@ -1,8 +1,5 @@
 <?php
-/*
- * Touch Icons
- *
- */
+
 function get_pingeroo_touch_image_sizes() {
 	return apply_filters( 'pingeroo_touch_image_sizes', array(192, 180, 152, 144, 120, 114, 76, 72, 57) );
 }
