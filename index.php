@@ -14,20 +14,6 @@ get_header();
 <div id="content" role="main">
 	<form method="post" action="<?php echo get_site_url(); ?>">
 		
-		<fieldset id="the-services">
-			<legend><i class="icon-flow-tree"></i> Pingeroo to</legend>
-			<select>
-				<?php echo get_pingeroo_group_options(); ?>
-				<option>-----</option>
-				<option value="all">All</option>
-				<option value="+1">+ Create a new group</option>	
-			</select>
-			
-			<?php list_pingeroo_services(); ?>
-			
-			<?php wp_nonce_field( 'pingeroo-create-group', 'pingeroo-create-group-nonce' ); ?>
-		</fieldset>
-		
 		<div class="main">
 			<fieldset id="the-message">
 				<label for="message" class="hidden">Message</label>
@@ -60,6 +46,20 @@ get_header();
 			</div>
 			
 		</div>
+		
+		<fieldset id="the-services">
+			<legend><i class="icon-flow-tree"></i> Pingeroo to</legend>
+			<select>
+				<?php echo get_pingeroo_group_options(); ?>
+				<option>-----</option>
+				<option value="all">All</option>
+				<option value="+1">+ Create a new group</option>	
+			</select>
+			
+			<?php list_pingeroo_services(); ?>
+			
+			<?php wp_nonce_field( 'pingeroo-create-group', 'pingeroo-create-group-nonce' ); ?>
+		</fieldset>
 		
 		<input type="hidden" name="pingeroo-nonce" value="<?php echo wp_create_nonce( 'do-pingeroo' );?>">
 		<input type="hidden" name="action" value="save_pingeroo_post">

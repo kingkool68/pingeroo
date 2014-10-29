@@ -46,7 +46,7 @@ font-size:4.5em;
 font-weight:600;
 margin-bottom:1em;
 float:left;
-width:70%;
+width:60%;
 }
 h1 a {
 text-decoration:none;
@@ -54,7 +54,7 @@ text-decoration:none;
 .controls {
 text-align:right;
 float:right;
-width:25%;
+width:40%;
 }
 #character-count {
 margin-right: 0.8em;
@@ -320,11 +320,21 @@ padding-bottom: 0.15em;
 @media (max-width: 38.75em) { /* 620px / 16 */
 	.main,
 	#the-services {
-	float:left;
+	float:none;
 	width:100%;
 	}
 }
-
+@media (max-width: 35em) { /* 560px / 16 */
+	#header h1,
+	#header .controls {
+	float:none;
+	text-align:center;
+	width:100%;
+	}
+	#header {
+	padding-bottom:2.5em;
+	}
+}
 
 /* Animation Classes */
 @-webkit-keyframes zoomOut {
