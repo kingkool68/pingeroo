@@ -301,9 +301,8 @@ jQuery(document).ready(function($) {
 			}
 		});
 		
-		var showByDefault = true;
-		if( showByDefault ) {
-			//$geotagButton.click();
+		if( pingerooOptions['geotag-by-default'] == 'true' ) {
+			$geotagButton.click();
 		}
 	} else {
 		$geotagButton.hide();

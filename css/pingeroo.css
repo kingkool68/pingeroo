@@ -7,6 +7,7 @@ height:100%;
 }
 body {
 margin:2.5em auto;
+padding:0 1.8em;
 max-width:96em;
 }
 form {
@@ -314,6 +315,14 @@ transform:translateY(-50%);
 display: block;
 font-size: 300%;
 padding-bottom: 0.15em;
+}
+
+@media (max-width: 38.75em) { /* 620px / 16 */
+	.main,
+	#the-services {
+	float:left;
+	width:100%;
+	}
 }
 
 

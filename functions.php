@@ -25,6 +25,15 @@ function pingeroo_frontend_ajaxurl() {
 }
 add_action('wp_head','pingeroo_frontend_ajaxurl');
 
+function pingeroo_options_for_js() {
+?>
+	<script>
+		var pingerooOptions = <?php echo json_encode( get_pingeroo_options() ); ?>;
+	</script>
+<?php
+}
+add_action('wp_footer', 'pingeroo_options_for_js');
+
 function get_pingeroo_options() {
 	$options = get_option('pingeroo');
 	$defaults = array( 'pre-fill' );
