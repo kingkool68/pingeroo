@@ -260,6 +260,26 @@ transition: opacity 600ms;
 opacity:0;
 }
 
+/* Settings */
+.settings {
+font-size: 1.4em;
+margin: 1em 0;
+}
+.settings a {
+text-decoration:none;
+color:#c9c9c9;
+}
+.settings a:hover,
+.settings a:focus {
+color:#666;
+}
+.settings i {
+padding-right: 0.25em;
+font-size: 150%;
+position: relative;
+top: 0.2em;
+}
+
 /* Drop Target for Uploads */
 #drop-target {
 position: fixed;
