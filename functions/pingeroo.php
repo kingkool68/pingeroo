@@ -289,21 +289,50 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 	}
 	
 	//Load the twitter-text library to extract some meta data from the message
-	require_once( get_stylesheet_directory() . '/lib/twitter-text/Extractor.php' );
-	$stuff = Twitter_Extractor::create( $args['message'] )->extract();
+	// TURN THIS IN TO A SEPARATE PLUGIN
+	//require_once( get_stylesheet_directory() . '/lib/twitter-text/Extractor.php' );
+	//$stuff = Twitter_Extractor::create( $args['message'] )->extract();
 	/*
 	$stuff['hashtags'];
 	$stuff['mentions'];
 	$stuff['urls'];	
 	*/
 	
+	$options = get_pingeroo_options();
+	$services = get_pingeroo_services();
+	
+	$pingeroo_service_meta = array();
+	if( isset($args['pingeroo-services']) && !empty( $args['pingeroo-services'] ) ) {
+		$selected_services = array_map('intval', $args['pingeroo-services']);
+		
+		
+		foreach( $services as $service_slug => $users ) {
+			foreach($users as $account) {
+				if( in_array( $account->unique_id, $selected_services) ) {
+					if( !isset( $pingeroo_service_meta[ $service_slug ] ) ) {
+						$pingeroo_service_meta[ $service_slug ] = array();
+					} 
+					$pingeroo_service_meta[ $service_slug ][] = $account;
+				}
+			}
+		}
+	}
 	
 	$new_post = array(
 		'post_content' => $args['message'],
 		'post_status' => 'publish'
 	);
 	
-	var_dump( $new_post );
+	//$post_id = wp_insert_post( $new_post );
+	//Then add_post_meta() using the post id.
+	
+	/*
+	Meta names:
+	- pingeroo-services
+	- pingeroo-geotag
+	-
+	*/
+	var_dump( $pingeroo_service_meta );
 	
 }
 
