@@ -289,6 +289,7 @@ jQuery(document).ready(function($) {
 	
 	if( 'geolocation' in navigator ) {
 		$geotagButton.on('click', function(e) {
+			e.preventDefault();
 			if( $geotagButton.hasClass('active') ) {
 				//Clean up
 				$geotagButton.removeClass('active').find('span').remove();
