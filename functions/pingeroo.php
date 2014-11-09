@@ -330,7 +330,7 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 	Meta names:
 	- pingeroo-services
 	- pingeroo-geotag
-	-
+	- pingeroo-images
 	*/
 	var_dump( $pingeroo_service_meta );
 	

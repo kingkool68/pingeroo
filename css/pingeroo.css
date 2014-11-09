@@ -199,7 +199,7 @@ position:absolute;
 top:0.5em;
 right:0.5em;
 font-size:2em;
-opacity:0;
+opacity:0.4;
 transition: all 175ms;
 z-index:15;
 color:red;
@@ -213,6 +213,10 @@ box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
 .added-media .media:hover .close,
 .added-media .close:focus {
 opacity:1;
+}
+.media-is-hidden .close,
+.media-is-uploading .close {
+opacity:0;
 }
 .added-media .percent {
 font-size: 3.5em;

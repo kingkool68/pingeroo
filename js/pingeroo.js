@@ -351,21 +351,21 @@ jQuery(document).ready(function($) {
 		updateUploadProgress( file.percent, $('#' + file.id) );
 	});
 	uploader.bind('BeforeUpload',function(up, file) {
-		$('#' + file.id).removeClass('media-is-hidden');
+		$('#' + file.id).removeClass('media-is-hidden').addClass('media-is-uploading');
 	});
 	
 	uploader.bind('FileUploaded', function(up, file, resp) {
 		// Called when file has finished uploading
 		data = $.parseJSON( resp.response );
+		fileHTML = '<img src="' + data.img + '" class="preloading" draggable="false">';
+		fileHTML += '<input type="hidden" name="pingeroo-images[]" value="' + data.id + '">';
+		
 		$file = $('#' + file.id);
-		$file.append( '<img src="' + data.img + '" class="preloading" draggable="false">' );
+		$file.append( fileHTML );
 		$file.find('.progress, .percent').fadeOut(900, function() {
+			$file.removeClass('media-is-uploading');
 			$(this).siblings('.preloading').removeClass('preloading');
 		});
-	});
-	
-	uploader.bind('UploadComplete', function(up, files) {
-		//console.log('Upload complete');
 	});
 	
 	function updateUploadProgress(percent, $elem) {
