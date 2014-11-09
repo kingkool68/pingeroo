@@ -46,6 +46,49 @@ function get_pingeroo_options() {
 	return $options;
 }
 
+/**
+ * Checks if a WordPress plugin is installed.
+ *
+ * @param  string  $pluginTitle The plugin title (e.g. "My Plugin")
+ *
+ * @return string/boolean       The plugin file/folder relative to the plugins folder path (e.g. "my-plugin/my-plugin.php") or false
+ 
+ via https://gist.github.com/lucatume/85b0a5dcd4689d11a380
+ */
+function is_plugin_installed($pluginTitle) {
+    // get all the plugins
+    $installed_plugins = get_plugins();
+
+    foreach( $installed_plugins as $installed_plugin => $data) {
+        if ($data['Title'] == $pluginTitle) {
+            return true;
+        }
+    }
+	
+    return false;
+}
+
+function pingeroo_keyring_maybe_not_active() {
+	if( is_plugin_active( 'keyring/keyring.php' ) ) {
+		return;
+	}
+	
+	if( is_plugin_installed( 'Keyring' ) ) {
+	?>
+    <div class="error">
+        <p>The <a href="<?php echo admin_url( 'plugins.php?s=Keyring' ); ?>">Keyring plugin</a> needs to be activated.</p>
+    </div>
+    <?php
+	} else {
+	?>
+    <div class="error">
+        <p>Pingeroo requires the <a href="<?php echo admin_url( 'plugin-install.php?tab=search&s=keyring' ); ?>">Keyring</a> plugin by <em>Beau Lebens</em> to be installed and activated.</p>
+    </div>
+    <?php
+	}
+}
+add_action( 'admin_notices', 'pingeroo_keyring_maybe_not_active' );
+
 include( 'functions/pingeroo.php' );
 include( 'functions/pingeroo-touch-icons.php' );
 include( 'functions/pingeroo-admin-options.php' );
