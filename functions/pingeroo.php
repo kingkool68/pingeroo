@@ -301,6 +301,7 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 	$options = get_pingeroo_options();
 	$services = get_pingeroo_services();
 	
+	//Process Service Data
 	$pingeroo_service_meta = array();
 	if( isset($args['pingeroo-services']) && !empty( $args['pingeroo-services'] ) ) {
 		$selected_services = array_map('intval', $args['pingeroo-services']);
@@ -318,7 +319,25 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 		}
 	}
 	
+	//Process Geo Coordinates Data
+	$geo_coordinates = '';
+	if( isset( $args['lat'] ) && !empty( $args['lat'] ) ) {
+		$geo_coordinates = $args['lat'];
+	}
+	
+	if( isset( $args['long'] ) && !empty( $args['long'] ) ) {
+		$geo_coordinates .= ',' . $args['long'];
+	}
+	
+	//Process Image Data
+	$pingeroo_images = '';
+	if( isset( $args['pingeroo-images'] ) && !empty( $args['pingeroo-images'] ) ) {
+		$pingeroo_images = implode( ',', $args['pingeroo-images'] );
+	}
+	
+	
 	$new_post = array(
+		'post_title' => wp_strip_all_tags( $args['message'], true ),
 		'post_content' => $args['message'],
 		'post_status' => 'publish'
 	);
@@ -332,7 +351,7 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 	- pingeroo-geotag
 	- pingeroo-images
 	*/
-	var_dump( $pingeroo_service_meta );
+	var_dump( $args );
 	
 }
 
