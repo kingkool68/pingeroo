@@ -180,6 +180,19 @@ display:block;
 cursor:pointer;
 }
 
+/* Geotag Button */
+.finding-location i {
+-webkit-animation-name: pulsing;
+animation-name: pulsing;
+
+-webkit-animation-iteration-count: infinite;
+animation-iteration-count: infinite;
+		  
+-webkit-animation-duration: 1.35s;
+animation-duration: 1.35s;
+}
+
+
 /* Added Media */
 .added-media {
 overflow:auto;
@@ -371,6 +384,18 @@ padding-bottom: 0.15em;
   100% {
     opacity: 0;
   }
+}
+
+@-webkit-keyframes pulsing {
+	50% {
+		color:#555;
+	}
+}
+
+@keyframes pulsing {
+	50% {
+		color:#555;
+	}
 }
 
 .zoomOut {

@@ -245,7 +245,7 @@ jQuery(document).ready(function($) {
 					}
 				}
 				$map.find('p').text( address );
-				$geotagButton.find('span').remove();
+				$geotagButton.removeClass('finding-location').find('span').remove();
 				$geotagButton.append( '<span>' + address + '</span>' );
 				
 			} else {
@@ -298,6 +298,7 @@ jQuery(document).ready(function($) {
 				$('#long').val('');
 				$('#map').html('');
 			} else {
+				$geotagButton.addClass('finding-location');
 				navigator.geolocation.getCurrentPosition(geotagSuccess, geotagError);
 			}
 		});
