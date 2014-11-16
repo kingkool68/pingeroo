@@ -74,6 +74,9 @@ function register_pingeroo_taxonomies() {
 		'show_tagcloud'              => false,
 	);
 	register_taxonomy( 'pingeroo-mentions', array( 'post' ), $args );
+	
+	//Remove the built-in category taxonomy from Posts
+	register_taxonomy( 'category', array() );
 
 }
 add_action( 'init', 'register_pingeroo_taxonomies', 0 );
@@ -279,12 +282,14 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 		!wp_verify_nonce( $args['pingeroo-nonce'], 'do-pingeroo' )
 	) {
 		//Maybe should throw a WP Error instead?
+		echo 'BAD NONCE';
 		return false;
 	}
 	
 	//If there is no message then what is the point?
 	if( !isset( $args['message'] ) ) {
 		//Maybe should throw a WP Error instead?
+		echo 'NO MESSAGE';
 		return false;
 	}
 	
@@ -339,20 +344,25 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 	$new_post = array(
 		'post_title' => wp_strip_all_tags( $args['message'], true ),
 		'post_content' => $args['message'],
-		'post_status' => 'publish'
+		'post_status' => 'publish',
+		'post_type' => 'post'
 	);
 	
-	//$post_id = wp_insert_post( $new_post );
-	//Then add_post_meta() using the post id.
-	
 	/*
-	Meta names:
-	- pingeroo-services
-	- pingeroo-geotag
-	- pingeroo-images
-	*/
-	var_dump( $args );
+	$post_id = wp_insert_post( $new_post );
 	
+	if( $pingeroo_service_meta ) {
+		update_post_meta($post_id, 'pingeroo-services', $pingeroo_service_meta );
+	}
+	
+	if( $geo_coordinates ) {
+		update_post_meta($post_id, 'pingeroo-geotag', $geo_coordinates );
+	}
+	
+	if( $pingeroo_images ) {
+		update_post_meta($post_id, 'pingeroo-images', $pingeroo_images );
+	}
+	*/
 }
 
 function save_pingeroo_post_ajax_callback() {
@@ -362,6 +372,12 @@ function save_pingeroo_post_ajax_callback() {
 add_action( 'wp_ajax_save_pingeroo_post', 'save_pingeroo_post_ajax_callback' );
 add_action( 'wp_ajax_nopriv_save_pingeroo_post', 'save_pingeroo_post_ajax_callback' );
 
+function pingeroo_transition_post_status( $new_status, $old_status, $post ) {
+	//Works even when inserting a new post that is directly set to publish.
+	if ( $new_status == 'publish' && $post->post_type == 'post' ) {
+	}
+}
+add_action( 'transition_post_status', 'pingeroo_transition_post_status', 10, 3 );
 
 
 function pingeroo_post_to_twitter($message, $service) {
