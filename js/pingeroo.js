@@ -1,3 +1,29 @@
+(function($) {
+	jQuery.fn.putCursorAtEnd = function() {
+    	return this.each(function() {
+        	$(this).focus()
+
+        	// If this function exists...
+        	if (this.setSelectionRange) {
+        		// ... then use it
+        		// (Doesn't work in IE)
+
+        		// Double the length because Opera is inconsistent about whether a carriage return is one character or two. Sigh.
+        		var len = $(this).val().length * 2;
+        		this.setSelectionRange(len, len);
+        	} else {
+        		// ... otherwise replace the contents with itself
+        		// (Doesn't work in Google Chrome)
+        		$(this).val( $(this).val() );
+        	}
+
+        	// Scroll to the bottom, in case we're in a tall textarea
+        	// (Necessary for Firefox and Google Chrome)
+        	this.scrollTop = 999999;
+    	});
+    };
+})(jQuery);
+
 jQuery(document).ready(function($) {
 	/**
 	* General
@@ -16,34 +42,92 @@ jQuery(document).ready(function($) {
 			return
 		}
 		
+		if( $('body').is('.successful-post') ) {
+			return;
+		}
+		
 		$.ajax({
 			type: "POST",
 			url: ajaxurl,
 			data: $( this ).serialize()
 		}).success( function( resp ) {
-			$message.val( defaultMessageText ).keyup().focus();
-			console.log( resp );
+			resetNotice();
+			$message.val( defaultMessageText ).keyup();
+			pingerooFocus( $message );
+			
+			$('.added-media').html('');
+			$('.buttons .media.active').removeClass('active');
+			
+			$('#notice h2').text( randomSuccessMessage() + '!' );
+			$('body').addClass('successful-post');
+			
+			setTimeout(function() {
+				resetNotice();
+			}, 1750);
 			
 		}).fail( function( response, textStatus, errorThrown ) {
 			alert('Error: ' + response.responseText );
 		});
 	});
 	
+	function randomSuccessMessage() {
+		var messages = [
+			'Success',
+			'Boom Shakalaka',
+			'#WINNING',
+			'Triumph',
+			'Victory',
+			'You did it',
+			'All systems go'
+		];
+		
+		return messages[ Math.floor(Math.random() * messages.length) ];
+	}
+
+	
+	function resetNotice() {
+		$('body').removeClass('successful-post');
+		$('#notice h2').text( '' );
+	}
+	
 	
 	/**
 	* The Message
 	*
 	**/
+	
+	function pingerooFocus( $el ) {
+		if( !defaultMessageText ) {
+			$el.focus();
+			return;
+		}
+		
+		if( defaultMessageText[0] == ' ' ) {
+			console.log('Front');
+			$el.focus();
+			return;
+		}
+		
+		//Otherwise...
+		$el.putCursorAtEnd();
+	}
+	
 	var $message = $('#message');
 	var defaultMessageText = $message.val();
 	$('<textarea id="message-clone" rows="1" />').insertAfter('#message');
-	$message.on('keyup', function() {
+	$message.on('keyup', function(e) {
 		$('#character-count').html( this.value.length );
 		var clonedMessage = document.getElementById('message-clone')
 		clonedMessage.value = this.value;
 		this.style.height = clonedMessage.scrollHeight + 'px';
-	}).focus();
-
+	}).on('keydown', function(e) {
+		if( e.which == 13 && !e.shiftKey ) {
+			e.preventDefault();
+			$('.controls .submit').click();
+		}
+	});
+	
+	pingerooFocus( $message );
 
 	/**
 	* The Services
