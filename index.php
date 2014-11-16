@@ -81,4 +81,8 @@ get_header();
 	<h2><i class="icon-upload" aria-hidden="true"></i>Drop files here to upload</h2>
 </div>
 
+<div id="notice">
+	<h2></h2>
+</div>
+
 <?php get_footer(); ?>
