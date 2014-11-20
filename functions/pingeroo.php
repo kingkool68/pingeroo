@@ -389,6 +389,15 @@ function pingeroo_post_to_twitter($message, $service) {
 	
 	//TODO: Turn ellipsees into a single character wptextureize?
 	
+	/*
+	If there are media items, upload them to twitter and pass the media ids to the Tweet
+	POST files via WordPress HTTP_API class http://gerhardpotgieter.com/2014/07/30/uploading-files-with-wp_remote_post-or-wp_remote_request/ 
+	
+	https://dev.twitter.com/rest/public/uploading-media-multiple-photos
+	
+	https://dev.twitter.com/rest/reference/post/statuses/update
+	*/
+	
 	//These are just like WP_HTTP class...
 	$params = array(
 		'method' => 'POST',
