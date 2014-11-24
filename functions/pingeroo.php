@@ -230,47 +230,6 @@ add_action( 'wp_ajax_nopriv_add_pingeroo_group', 'add_pingeroo_group' );
  * POSTING TO SERVICES
  * 
  */
-function do_pingeroo() {
-	if( !isset( $_POST['pingeroo-nonce'] ) || !wp_verify_nonce( $_POST['pingeroo-nonce'], 'do-pingeroo' ) ) {
-		return;
-	}
-	 //Let WordPress do the nice formatting and then we need to convert HTML entities to actual characters again.
-	$message = html_entity_decode( wptexturize( $_POST['message'] ) );
-	$account_ids = array_map( 'intval', $_POST['pingeroo-services'] );
-	
-	$pingeroo_services = get_pingeroo_services();
-	foreach( $pingeroo_services as $service_name => $accounts ) {
-		$service_name = strtolower( $service_name );
-		
-		foreach( $accounts as $account ) {
-			if( in_array( $account->unique_id, $account_ids ) ) {
-				
-				//Initialize instance of Keyring
-				$kr = Keyring::init();
-				
-				//Get the token
-				$token = $kr->get_token_store()->get_token( array( 
-					'service' => $service_name,
-					'id' => $account->unique_id
-				) );
-				
-				//Get the service
-				$service = $kr->get_service_by_name( $service_name );
-				$service->set_token( $token );
-				
-				$func = 'pingeroo_post_to_' . $service_name;
-				if( function_exists(  $func ) ) {
-					call_user_func( $func, $message, $service );
-				}
-			}
-		}
-	}
-	
-	//wp_redirect( add_query_arg( array('pingeroo' => 'success'), get_site_url() ) );
-	die();
-}
-//add_action( 'init', 'do_pingeroo' );
-
 function save_pingeroo_request_to_post( $args = FALSE ) {
 	if( !$args ) {
 		$args = $_POST;
@@ -325,19 +284,19 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 	}
 	
 	//Process Geo Coordinates Data
-	$geo_coordinates = '';
+	$pingeroo_geo_coordinates = '';
 	if( isset( $args['lat'] ) && !empty( $args['lat'] ) ) {
-		$geo_coordinates = $args['lat'];
+		$pingeroo_geo_coordinates = $args['lat'];
 	}
 	
 	if( isset( $args['long'] ) && !empty( $args['long'] ) ) {
-		$geo_coordinates .= ',' . $args['long'];
+		$pingeroo_geo_coordinates .= ',' . $args['long'];
 	}
 	
 	//Process Image Data
 	$pingeroo_images = '';
 	if( isset( $args['pingeroo-images'] ) && !empty( $args['pingeroo-images'] ) ) {
-		$pingeroo_images = implode( ',', $args['pingeroo-images'] );
+		$pingeroo_images = implode( ',', array_map('intval', $args['pingeroo-images']) );
 	}
 	
 	
@@ -348,21 +307,19 @@ function save_pingeroo_request_to_post( $args = FALSE ) {
 		'post_type' => 'post'
 	);
 	
-	/*
 	$post_id = wp_insert_post( $new_post );
 	
 	if( $pingeroo_service_meta ) {
 		update_post_meta($post_id, 'pingeroo-services', $pingeroo_service_meta );
 	}
 	
-	if( $geo_coordinates ) {
-		update_post_meta($post_id, 'pingeroo-geotag', $geo_coordinates );
+	if( $pingeroo_geo_coordinates ) {
+		update_post_meta($post_id, 'pingeroo-geotag', $pingeroo_geo_coordinates );
 	}
 	
 	if( $pingeroo_images ) {
 		update_post_meta($post_id, 'pingeroo-images', $pingeroo_images );
 	}
-	*/
 }
 
 function save_pingeroo_post_ajax_callback() {
@@ -373,264 +330,141 @@ add_action( 'wp_ajax_save_pingeroo_post', 'save_pingeroo_post_ajax_callback' );
 add_action( 'wp_ajax_nopriv_save_pingeroo_post', 'save_pingeroo_post_ajax_callback' );
 
 function pingeroo_transition_post_status( $new_status, $old_status, $post ) {
-	//Works even when inserting a new post that is directly set to publish.
 	if ( $new_status == 'publish' && $post->post_type == 'post' ) {
+		do_pingeroo( $post );
 	}
 }
 add_action( 'transition_post_status', 'pingeroo_transition_post_status', 10, 3 );
 
 
-function pingeroo_post_to_twitter($message, $service) {
-	
-	if( function_exists('Normalizer') ) {
-		//We need to normalize the text per https://dev.twitter.com/docs/counting-characters
-		$message = normalizer_normalize($message);
+function do_pingeroo( $post ) {
+	if( is_int( $post ) ) {
+		$post = get_post( $post );
 	}
 	
-	//TODO: Turn ellipsees into a single character wptextureize?
-	
-	/*
-	If there are media items, upload them to twitter and pass the media ids to the Tweet
-	POST files via WordPress HTTP_API class http://gerhardpotgieter.com/2014/07/30/uploading-files-with-wp_remote_post-or-wp_remote_request/ 
-	
-	https://dev.twitter.com/rest/public/uploading-media-multiple-photos
-	
-	https://dev.twitter.com/rest/reference/post/statuses/update
-	*/
-	
-	//These are just like WP_HTTP class...
-	$params = array(
-		'method' => 'POST',
-		'body' => array(
-			'status' => $message
-		)
-	);
-
-	$resp = $service->request( 'https://api.twitter.com/1.1/statuses/update.json', $params );
-	echo '--POST to TWITTER--' . "\n";
-	echo '<pre>';
-	var_dump( $resp );
-	echo '</pre>';
-	echo "\n\n";
-	
-	/**
-	
-	object(stdClass)#282 (22) {
-  ["created_at"]=>
-  string(30) "Sat Sep 06 05:25:08 +0000 2014"
-  ["id"]=>
-  float(5.0812371562923E+17)
-  ["id_str"]=>
-  string(18) "508123715629228032"
-  ["text"]=>
-  string(15) "Time for bed..."
-  ["source"]=>
-  string(61) "Pingeroo.dev"
-  ["truncated"]=>
-  bool(false)
-  ["in_reply_to_status_id"]=>
-  NULL
-  ["in_reply_to_status_id_str"]=>
-  NULL
-  ["in_reply_to_user_id"]=>
-  NULL
-  ["in_reply_to_user_id_str"]=>
-  NULL
-  ["in_reply_to_screen_name"]=>
-  NULL
-  ["user"]=>
-  object(stdClass)#322 (40) {
-    ["id"]=>
-    int(64833)
-    ["id_str"]=>
-    string(5) "64833"
-    ["name"]=>
-    string(16) "Russell Heimlich"
-    ["screen_name"]=>
-    string(10) "kingkool68"
-    ["location"]=>
-    string(16) "Washington, D.C."
-    ["description"]=>
-    string(115) "Front end web developer working at the Pew Research Center. I made http://t.co/J0nSMa1f and married @naudebynature."
-    ["url"]=>
-    string(22) "http://t.co/JEGVRfwNUB"
-    ["entities"]=>
-    object(stdClass)#323 (2) {
-      ["url"]=>
-      object(stdClass)#324 (1) {
-        ["urls"]=>
-        array(1) {
-          [0]=>
-          object(stdClass)#325 (4) {
-            ["url"]=>
-            string(22) "http://t.co/JEGVRfwNUB"
-            ["expanded_url"]=>
-            string(35) "http://www.russellheimlich.com/blog"
-            ["display_url"]=>
-            string(24) "russellheimlich.com/blog"
-            ["indices"]=>
-            array(2) {
-              [0]=>
-              int(0)
-              [1]=>
-              int(22)
-            }
-          }
-        }
-      }
-      ["description"]=>
-      object(stdClass)#326 (1) {
-        ["urls"]=>
-        array(1) {
-          [0]=>
-          object(stdClass)#327 (4) {
-            ["url"]=>
-            string(20) "http://t.co/J0nSMa1f"
-            ["expanded_url"]=>
-            string(21) "http://dummyimage.com"
-            ["display_url"]=>
-            string(14) "dummyimage.com"
-            ["indices"]=>
-            array(2) {
-              [0]=>
-              int(67)
-              [1]=>
-              int(87)
-            }
-          }
-        }
-      }
-    }
-    ["protected"]=>
-    bool(false)
-    ["followers_count"]=>
-    int(1665)
-    ["friends_count"]=>
-    int(279)
-    ["listed_count"]=>
-    int(123)
-    ["created_at"]=>
-    string(30) "Wed Dec 13 19:56:58 +0000 2006"
-    ["favourites_count"]=>
-    int(963)
-    ["utc_offset"]=>
-    int(-14400)
-    ["time_zone"]=>
-    string(26) "Eastern Time (US & Canada)"
-    ["geo_enabled"]=>
-    bool(true)
-    ["verified"]=>
-    bool(false)
-    ["statuses_count"]=>
-    int(22120)
-    ["lang"]=>
-    string(2) "en"
-    ["contributors_enabled"]=>
-    bool(false)
-    ["is_translator"]=>
-    bool(false)
-    ["is_translation_enabled"]=>
-    bool(false)
-    ["profile_background_color"]=>
-    string(6) "C6E2EE"
-    ["profile_background_image_url"]=>
-    string(48) "http://abs.twimg.com/images/themes/theme2/bg.gif"
-    ["profile_background_image_url_https"]=>
-    string(49) "https://abs.twimg.com/images/themes/theme2/bg.gif"
-    ["profile_background_tile"]=>
-    bool(false)
-    ["profile_image_url"]=>
-    string(58) "http://pbs.twimg.com/profile_images/16490342/me_normal.jpg"
-    ["profile_image_url_https"]=>
-    string(59) "https://pbs.twimg.com/profile_images/16490342/me_normal.jpg"
-    ["profile_banner_url"]=>
-    string(54) "https://pbs.twimg.com/profile_banners/64833/1347977345"
-    ["profile_link_color"]=>
-    string(6) "1F98C7"
-    ["profile_sidebar_border_color"]=>
-    string(6) "C6E2EE"
-    ["profile_sidebar_fill_color"]=>
-    string(6) "DAECF4"
-    ["profile_text_color"]=>
-    string(6) "663B12"
-    ["profile_use_background_image"]=>
-    bool(true)
-    ["default_profile"]=>
-    bool(false)
-    ["default_profile_image"]=>
-    bool(false)
-    ["following"]=>
-    bool(false)
-    ["follow_request_sent"]=>
-    bool(false)
-    ["notifications"]=>
-    bool(false)
-  }
-  ["geo"]=>
-  NULL
-  ["coordinates"]=>
-  NULL
-  ["place"]=>
-  NULL
-  ["contributors"]=>
-  NULL
-  ["retweet_count"]=>
-  int(0)
-  ["favorite_count"]=>
-  int(0)
-  ["entities"]=>
-  object(stdClass)#328 (4) {
-    ["hashtags"]=>
-    array(0) {
-    }
-    ["symbols"]=>
-    array(0) {
-    }
-    ["urls"]=>
-    array(0) {
-    }
-    ["user_mentions"]=>
-    array(0) {
-    }
-  }
-  ["favorited"]=>
-  bool(false)
-  ["retweeted"]=>
-  bool(false)
-  ["lang"]=>
-  string(2) "en"
-}
-	
-	**/
-}
-
-function pingeroo_post_to_facebook($message, $service) {
-	//These are just like WP_HTTP class...
-	$params = array(
-		'method' => 'POST',
-		'body' => array(
-			'message' => $message
-		)
-	);
-
-	$resp = $service->request( 'https://graph.facebook.com/me/feed/', $params );
-	
-	echo '--POST to FACEBOOK--' . "\n";
-	echo '<pre>';
-	var_dump( $resp );
-	echo '</pre>';
-	echo "\n\n";
-	
-	/**
-	This is what comes back...
-	object(stdClass)#318 (1) {
-  		["id"]=> string(35) "10101510112654538_10101536207555148"
+	if( !$post || !is_object( $post ) || !property_exists($post, 'ID') ) {
+		return;
 	}
-	**/
+	
+	$services_to_require = array('twitter', 'facebook', 'linkedin');
+	foreach( $services_to_require as $name ) {
+		require_once( get_template_directory() . '/functions/pingeroo-' . $name . '.php' );
+	}
+	
+	
+	//Initialize instance of Keyring
+	$kr = Keyring::init();
+	
+	$message = wp_strip_all_tags( $post->post_content, true );
+	
+	$meta = get_pingeroo_meta( $post->ID );
+	$pingeroo_services = get_pingeroo_services();
+
+	foreach( $pingeroo_services as $service_name => $accounts ) {
+		$service_name = strtolower( $service_name );
+		
+		foreach( $accounts as $account ) {
+			if( in_array( $account->unique_id, $meta['services'] ) ) {
+				
+				//Get the token
+				$token = $kr->get_token_store()->get_token( array( 
+					'service' => $service_name,
+					'id' => $account->unique_id
+				) );
+				
+				//Get the service
+				$service = $kr->get_service_by_name( $service_name );
+				$service->set_token( $token );
+				
+				$func = 'pingeroo_post_to_' . $service_name;
+				if( function_exists(  $func ) ) {
+					call_user_func( $func, $message, $meta, $service );
+				}
+			}
+		}
+	}
 }
 
-function pingeroo_post_to_linkedin($message, $service) {
-	echo 'Post to LinkedIn';
-	//https://api.linkedin.com/v1/people/~/shares
-	//Array to XML http://stackoverflow.com/questions/1397036/how-to-convert-array-to-simplexml 
+
+/*
+ *	Helper Functions
+ *
+ */
+
+function get_pingeroo_options() {
+	$options = get_option('pingeroo');
+	$defaults = array( 'pre-fill' );
+	foreach( $defaults as $key ) {
+		if( !isset( $options[ $key ] ) ) {
+			$options[ $key ] = '';
+		}
+	}
+	
+	return $options;
 }
+
+//Gets all of the meta data for a pingeroo post...
+function get_pingeroo_meta( $post_id = 0 ) {
+	$output = array(
+		'post_id' => $post_id,
+		'images' => array(),
+		'geo' => array(
+			'lat' => '',
+			'long' => ''
+		),
+		'services' => array()
+	);
+
+	if( !$post_id ) {
+		return $output;
+	}
+	
+	
+	if( $services = get_post_meta($post_id, 'pingeroo-services', true ) ) {
+		foreach( $services as $key => $data ) {
+			foreach( $data as $service ) {
+				$output['services'][] = $service->unique_id;
+			}
+		}
+	}
+	
+	if( $geo = get_post_meta($post_id, 'pingeroo-geotag', true ) ) {
+		$geo = explode( ',', $geo );
+		if( isset( $geo[0] ) ) {
+			$output['geo']['lat'] = floatval( $geo[0] );
+		}
+		if( isset( $geo[1] ) ) {
+			$output['geo']['long'] = floatval( $geo[1] );
+		}
+	}
+	
+	if( $images = get_post_meta($post_id, 'pingeroo-images', true ) ) {
+		$images = explode(',', $images);
+		foreach( $images as $attachment_id ) {
+			if( $data = wp_get_attachment_image_src( $attachment_id, 'full' ) ) {
+				$output['images'][] = (object) array(
+					'id' => intval($attachment_id),
+					'src' => get_attached_file( $attachment_id ),
+					'width' => $data[1],
+					'height' => $data[2]
+				);
+			}
+		}
+	}
+	
+	return $output;
+}
+
+function save_pingeroo_response() {
+
+}
+
+//Output all of the pingeroo options as a JSON object for use on the front end...
+function pingeroo_options_for_js() {
+?>
+	<script>
+		var pingerooOptions = <?php echo json_encode( get_pingeroo_options() ); ?>;
+	</script>
+<?php
+}
+add_action('wp_footer', 'pingeroo_options_for_js');

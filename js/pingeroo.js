@@ -103,7 +103,6 @@ jQuery(document).ready(function($) {
 		}
 		
 		if( defaultMessageText[0] == ' ' ) {
-			console.log('Front');
 			$el.focus();
 			return;
 		}
